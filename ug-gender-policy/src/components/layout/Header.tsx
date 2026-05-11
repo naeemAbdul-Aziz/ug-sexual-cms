@@ -1,18 +1,18 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
   return (
-    <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-desktop h-20 bg-surface/90 backdrop-blur-md border-b border-outline-variant shadow-sm">
-      <div className="flex items-center gap-10">
-        <span className="font-headline-lg text-2xl tracking-tight font-bold text-primary">UG Gender Policy</span>
-        <nav className="hidden md:flex items-center gap-8 h-full">
+    <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile md:px-margin-desktop h-20 bg-surface border-b border-outline-variant shadow-none">
+      <div className="flex items-center gap-12">
+        <Link to="/" className="font-headline-lg text-[24px] font-bold text-primary tracking-tight">UG GENDER POLICY</Link>
+        <nav className="hidden lg:flex gap-8 items-center h-full pt-2">
           <NavLink
             to="/"
             className={({ isActive }) =>
               isActive
-                ? "text-primary border-b-2 border-secondary font-semibold py-2 px-1 smooth-transition"
-                : "text-on-surface-variant hover:text-primary smooth-transition py-2 px-1"
+                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
             }
           >
             Overview
@@ -21,8 +21,8 @@ const Header: React.FC = () => {
             to="/principles"
             className={({ isActive }) =>
               isActive
-                ? "text-primary border-b-2 border-secondary font-semibold py-2 px-1 smooth-transition"
-                : "text-on-surface-variant hover:text-primary smooth-transition py-2 px-1"
+                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
             }
           >
             Principles
@@ -31,18 +31,28 @@ const Header: React.FC = () => {
             to="/institutions"
             className={({ isActive }) =>
               isActive
-                ? "text-primary border-b-2 border-secondary font-semibold py-2 px-1 smooth-transition"
-                : "text-on-surface-variant hover:text-primary smooth-transition py-2 px-1"
+                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
             }
           >
             Institutions
           </NavLink>
           <NavLink
+            to="/definitions"
+            className={({ isActive }) =>
+              isActive
+                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+            }
+          >
+            Definitions
+          </NavLink>
+          <NavLink
             to="/complaints"
             className={({ isActive }) =>
               isActive
-                ? "text-primary border-b-2 border-secondary font-semibold py-2 px-1 smooth-transition"
-                : "text-on-surface-variant hover:text-primary smooth-transition py-2 px-1"
+                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
             }
           >
             Complaints
@@ -51,40 +61,22 @@ const Header: React.FC = () => {
             to="/offences"
             className={({ isActive }) =>
               isActive
-                ? "text-primary border-b-2 border-secondary font-semibold py-2 px-1 smooth-transition"
-                : "text-on-surface-variant hover:text-primary smooth-transition py-2 px-1"
+                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
+                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
             }
           >
             Offences
           </NavLink>
-          <NavLink
-            to="/monitoring"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-semibold py-2 px-1 smooth-transition"
-                : "text-on-surface-variant hover:text-primary smooth-transition py-2 px-1"
-            }
-          >
-            Monitoring
-          </NavLink>
         </nav>
       </div>
       <div className="flex items-center gap-6">
-        <div className="relative hidden xl:block">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
-          <input
-            className="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary w-72 smooth-transition text-sm"
-            placeholder="Search policy document..."
-            type="text"
-          />
+        <div className="flex gap-4">
+          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="account_circle">account_circle</span>
         </div>
-        <button className="bg-primary text-on-primary px-5 py-2.5 rounded-lg font-label-md hover:bg-primary-container active:scale-95 smooth-transition shadow-sm">
+        <Link to="/report" className="hidden md:block bg-primary text-on-primary px-8 py-2.5 font-label-md text-label-md uppercase tracking-widest transition-all hover:bg-opacity-90 rounded-lg">
           Report Incident
-        </button>
-        <div className="flex items-center gap-2 border-l border-outline-variant pl-4">
-          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer p-2 hover:bg-surface-container rounded-full smooth-transition">notifications</span>
-          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer p-2 hover:bg-surface-container rounded-full smooth-transition">account_circle</span>
-        </div>
+        </Link>
       </div>
     </header>
   );

@@ -51,3 +51,16 @@
       display: none;
   }
 }
+
+/* Custom form input resets to match design system strict borders */
+input[type="text"], input[type="date"], select, textarea {
+    box-shadow: none !important;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: none !important;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
+}
