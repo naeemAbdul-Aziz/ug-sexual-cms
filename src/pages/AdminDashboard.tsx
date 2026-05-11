@@ -71,7 +71,7 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-14">
           <Link to="/admin/cases" className="group border border-outline-variant p-8 bg-white hover:bg-surface-container-low transition-all flex items-center gap-5">
             <div className="w-10 h-10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
               <span className="material-symbols-outlined text-[20px]">gavel</span>
@@ -80,7 +80,15 @@ const AdminDashboard: React.FC = () => {
               <p className="font-bold text-primary text-[13px] uppercase tracking-wider">Active Cases</p>
               <p className="text-on-surface-variant text-[11px] mt-0.5">View full case registry</p>
             </div>
-            <span className="material-symbols-outlined ml-auto text-outline group-hover:text-primary group-hover:translate-x-1 transition-all">east</span>
+          </Link>
+          <Link to="/admin/definitions" className="group border border-outline-variant p-8 bg-white hover:bg-surface-container-low transition-all flex items-center gap-5">
+            <div className="w-10 h-10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-[20px]">list_alt</span>
+            </div>
+            <div>
+              <p className="font-bold text-primary text-[13px] uppercase tracking-wider">Definitions</p>
+              <p className="text-on-surface-variant text-[11px] mt-0.5">Manage policy terms</p>
+            </div>
           </Link>
           <Link to="/admin/documents" className="group border border-outline-variant p-8 bg-white hover:bg-surface-container-low transition-all flex items-center gap-5">
             <div className="w-10 h-10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
@@ -88,9 +96,8 @@ const AdminDashboard: React.FC = () => {
             </div>
             <div>
               <p className="font-bold text-primary text-[13px] uppercase tracking-wider">Documents</p>
-              <p className="text-on-surface-variant text-[11px] mt-0.5">Policy archives & evidence</p>
+              <p className="text-on-surface-variant text-[11px] mt-0.5">Policy archives</p>
             </div>
-            <span className="material-symbols-outlined ml-auto text-outline group-hover:text-primary group-hover:translate-x-1 transition-all">east</span>
           </Link>
           <Link to="/admin/reporting" className="group border border-outline-variant p-8 bg-white hover:bg-surface-container-low transition-all flex items-center gap-5">
             <div className="w-10 h-10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
@@ -98,9 +105,8 @@ const AdminDashboard: React.FC = () => {
             </div>
             <div>
               <p className="font-bold text-primary text-[13px] uppercase tracking-wider">Reporting</p>
-              <p className="text-on-surface-variant text-[11px] mt-0.5">Analytics & audit reports</p>
+              <p className="text-on-surface-variant text-[11px] mt-0.5">Annual Analytics</p>
             </div>
-            <span className="material-symbols-outlined ml-auto text-outline group-hover:text-primary group-hover:translate-x-1 transition-all">east</span>
           </Link>
         </div>
 

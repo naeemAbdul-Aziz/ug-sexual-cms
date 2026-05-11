@@ -11,6 +11,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: '/admin',           icon: 'dashboard',     label: 'Dashboard',    end: true },
   { to: '/admin/cases',     icon: 'gavel',         label: 'Active Cases'               },
+  { to: '/admin/definitions', icon: 'list_alt',      label: 'Definitions'                },
   { to: '/admin/documents', icon: 'folder_shared', label: 'Documents'                  },
   { to: '/admin/reporting', icon: 'analytics',     label: 'Reporting'                  },
   { to: '/admin/audits',    icon: 'fact_check',    label: 'Audits'                     },

@@ -3,10 +3,54 @@ import AdminLayout from '../components/layout/AdminLayout';
 
 const AdminCases: React.FC = () => {
   const rows = [
-    { id: '#GBC-24-0812', party: 'Student Body',   accent: 'bg-secondary', date: '14 OCT 2024', status: 'Investigation',  statusCls: 'bg-blue-50 text-blue-800 border-blue-200',   officer: 'Dr. Abena Mensah' },
-    { id: '#GBC-24-0809', party: 'Staff (Admin)',   accent: 'bg-primary',   date: '12 OCT 2024', status: 'Panel Hearing',  statusCls: 'bg-amber-50 text-amber-800 border-amber-200', officer: 'Prof. Kwame Owusu' },
-    { id: '#GBC-24-0795', party: 'Student Body',   accent: 'bg-secondary', date: '05 OCT 2024', status: 'Initial Review', statusCls: 'bg-rose-50 text-rose-800 border-rose-200',    officer: 'Sarah Boateng' },
-    { id: '#GBC-24-0782', party: 'Faculty Member',  accent: 'bg-primary',   date: '28 SEP 2024', status: 'Recommendation', statusCls: 'bg-slate-100 text-slate-800 border-slate-200', officer: 'Dr. Abena Mensah' },
+    { 
+      id: '#GBC-24-0812', 
+      party: 'Student Body',   
+      accent: 'bg-secondary', 
+      date: '14 OCT 2024', 
+      status: 'Investigation',  
+      statusCls: 'bg-blue-50 text-blue-800 border-blue-200',   
+      officer: 'Dr. Abena Mensah',
+      type: 'Formal',
+      daysLeft: 12,
+      priority: 'High'
+    },
+    { 
+      id: '#GBC-24-0809', 
+      party: 'Staff (Admin)',   
+      accent: 'bg-primary',   
+      date: '12 OCT 2024', 
+      status: 'Panel Hearing',  
+      statusCls: 'bg-amber-50 text-amber-800 border-amber-200', 
+      officer: 'Prof. Kwame Owusu',
+      type: 'Formal',
+      daysLeft: 18,
+      priority: 'Medium'
+    },
+    { 
+      id: '#GBC-24-0795', 
+      party: 'Student Body',   
+      accent: 'bg-secondary', 
+      date: '05 OCT 2024', 
+      status: 'Initial Review', 
+      statusCls: 'bg-rose-50 text-rose-800 border-rose-200',    
+      officer: 'Sarah Boateng',
+      type: 'Informal',
+      daysLeft: null,
+      priority: 'Low'
+    },
+    { 
+      id: '#GBC-24-0782', 
+      party: 'Faculty Member',  
+      accent: 'bg-primary',   
+      date: '28 SEP 2024', 
+      status: 'Recommendation', 
+      statusCls: 'bg-slate-100 text-slate-800 border-slate-200', 
+      officer: 'Dr. Abena Mensah',
+      type: 'Formal',
+      daysLeft: 2,
+      priority: 'Critical'
+    },
   ];
 
   return (
@@ -19,7 +63,7 @@ const AdminCases: React.FC = () => {
             <div className="flex items-center gap-4 text-on-surface-variant text-sm">
               <span>Academic Year 2024/2025</span>
               <span className="w-1 h-1 bg-outline rounded-full" />
-              <span>53 Active Records</span>
+              <span>{rows.length} Active Records</span>
             </div>
           </div>
           <div className="flex gap-4">
@@ -34,39 +78,47 @@ const AdminCases: React.FC = () => {
           </div>
         </div>
 
+        {/* Timeline Warning (Sticky if any critical) */}
+        <div className="mb-8 p-4 bg-error-container/20 border-l-4 border-error flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="material-symbols-outlined text-error">notification_important</span>
+            <p className="text-sm font-bold text-error uppercase tracking-wider">
+              1 Case reaching the 21-day adjudication deadline today
+            </p>
+          </div>
+          <button className="text-[10px] font-bold text-error border-b border-error pb-0.5 uppercase tracking-widest">Take Immediate Action</button>
+        </div>
+
         {/* Filters */}
         <div className="mb-6 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-outline-variant pb-6">
           <div className="flex items-center gap-10">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Case Category</label>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Case Type</label>
               <select className="border-0 p-0 bg-transparent font-bold text-primary focus:ring-0 cursor-pointer uppercase text-[12px] tracking-wider outline-none shadow-none">
-                <option>All Registry Categories</option>
-                <option>Student Cases</option>
-                <option>Administrative Staff</option>
-                <option>Academic Faculty</option>
+                <option>All Types</option>
+                <option>Formal Adjudication</option>
+                <option>Informal Mediation</option>
               </select>
             </div>
             <div className="w-px h-8 bg-outline-variant" />
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Filing Period</label>
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Priority</label>
               <select className="border-0 p-0 bg-transparent font-bold text-primary focus:ring-0 cursor-pointer uppercase text-[12px] tracking-wider outline-none shadow-none">
-                <option>Last 30 Days</option>
-                <option>Current Semester</option>
-                <option>Academic Year 23/24</option>
+                <option>Any Priority</option>
+                <option>Critical</option>
+                <option>High</option>
+                <option>Normal</option>
               </select>
             </div>
-          </div>
-          <div className="text-on-surface-variant text-[11px] tracking-widest uppercase">
-            Registry Statistics: <span className="text-primary font-bold">53 Active Records</span>
           </div>
         </div>
 
         {/* Table */}
         <div className="w-full overflow-x-auto border border-outline-variant bg-white">
-          <table className="w-full text-left border-collapse min-w-[800px]">
+          <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>
-              <tr className="text-on-surface-variant border-b border-outline-variant">
-                {['Reference ID', 'Party Involved', 'Filing Date', 'Process Status', 'Case Officer', 'Action'].map((h, i) => (
+              <tr className="text-on-surface-variant border-b border-outline-variant bg-surface-container-low">
+                {['Reference ID', 'Type', 'Party', 'Deadline (21 Days)', 'Process Status', 'Action'].map((h, i) => (
                   <th key={h} className={`py-5 px-6 font-bold text-[10px] uppercase tracking-[0.2em] ${i === 5 ? 'text-right' : ''}`}>{h}</th>
                 ))}
               </tr>
@@ -75,7 +127,13 @@ const AdminCases: React.FC = () => {
               {rows.map((row) => (
                 <tr key={row.id} className="hover:bg-surface-container-low transition-all">
                   <td className="py-7 px-6">
-                    <span className="font-bold text-primary text-base tracking-tight">{row.id}</span>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-primary text-sm tracking-tight">{row.id}</span>
+                      <span className={`text-[9px] font-bold uppercase mt-1 ${row.priority === 'Critical' ? 'text-error animate-pulse' : 'text-on-surface-variant'}`}>{row.priority} Priority</span>
+                    </div>
+                  </td>
+                  <td className="py-7 px-6">
+                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest bg-surface-container-high px-2 py-1 border border-outline-variant">{row.type}</span>
                   </td>
                   <td className="py-7 px-6">
                     <div className="flex items-center gap-3">
@@ -83,14 +141,31 @@ const AdminCases: React.FC = () => {
                       <span className="font-medium text-on-surface text-sm">{row.party}</span>
                     </div>
                   </td>
-                  <td className="py-7 px-6 text-on-surface-variant font-medium text-sm">{row.date}</td>
+                  <td className="py-7 px-6">
+                    {row.daysLeft !== null ? (
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex justify-between items-end">
+                          <span className={`text-[10px] font-bold uppercase ${row.daysLeft <= 3 ? 'text-error' : 'text-on-surface-variant'}`}>
+                            {row.daysLeft} Working Days Left
+                          </span>
+                        </div>
+                        <div className="w-32 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full ${row.daysLeft <= 3 ? 'bg-error' : row.daysLeft <= 10 ? 'bg-amber-500' : 'bg-primary'}`} 
+                            style={{ width: `${(row.daysLeft / 21) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-[10px] text-outline italic">N/A (Informal)</span>
+                    )}
+                  </td>
                   <td className="py-7 px-6">
                     <span className={`inline-block px-3 py-1 border font-bold text-[9px] uppercase tracking-[0.15em] ${row.statusCls}`}>{row.status}</span>
                   </td>
-                  <td className="py-7 px-6 font-medium text-primary text-sm">{row.officer}</td>
                   <td className="py-7 px-6 text-right">
                     <button className="text-primary hover:bg-primary hover:text-white border border-primary px-4 py-2 font-bold text-[10px] uppercase tracking-widest transition-all outline-none">
-                      View Details
+                      Manage Case
                     </button>
                   </td>
                 </tr>

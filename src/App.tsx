@@ -18,6 +18,7 @@ import AdminDocuments from './pages/AdminDocuments';
 import AdminReporting from './pages/AdminReporting';
 import AdminAudits from './pages/AdminAudits';
 import AdminSettings from './pages/AdminSettings';
+import AdminDefinitions from './pages/AdminDefinitions';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route path="/admin/documents"    element={<AdminDocuments />} />
         <Route path="/admin/reporting"    element={<AdminReporting />} />
         <Route path="/admin/audits"       element={<AdminAudits />} />
+        <Route path="/admin/definitions"  element={<AdminDefinitions />} />
         <Route path="/admin/settings"     element={<AdminSettings />} />
 
         {/* Fallback */}
