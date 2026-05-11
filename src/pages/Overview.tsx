@@ -161,60 +161,51 @@ const Overview: React.FC = () => {
         </div>
       </section>
 
-      {/* Right-column reading lane section */}
-      <section className="py-stack-lg px-margin-desktop bg-white">
-        <div className="page-lane grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left: Legal & Special Measures */}
-          <div className="lg:col-span-8 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-surface-container-low p-8 border border-outline-variant">
-                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-secondary text-[18px]">gavel</span>
-                  Legal Basis
-                </h3>
-                <p className="text-on-surface-variant text-sm leading-relaxed italic border-l-4 border-secondary pl-4 py-1">
-                  "Grounded in the Constitution of the Republic of Ghana, the University of Ghana Act, 2010 (Act 806), CEDAW, the African Charter Protocol on Rights of Women, and the Beijing Platform for Action."
-                </p>
-              </div>
-              <div className="bg-primary/5 p-8 border border-primary/10">
-                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-secondary text-[18px]">diversity_3</span>
-                  Special Measures
-                </h3>
-                <p className="text-on-surface-variant text-sm leading-relaxed">
-                  The University may implement affirmative action measures to address historical imbalances in recruitment, promotion, and student admissions where gender disparities persist — without constituting a breach of the policy for those who do not benefit.
-                </p>
-              </div>
-            </div>
+      {/* Policy Framework & Resources */}
+      <section className="py-24 px-6 md:px-12 bg-white border-t border-outline-variant">
+        <div className="page-lane">
+          <div className="mb-10 text-center">
+            <span className="text-secondary font-bold text-[11px] uppercase tracking-widest">Framework & Resources</span>
+            <h2 className="font-display-lg text-3xl text-primary mt-2">Institutional Compliance</h2>
           </div>
-
-          {/* Right: CTA */}
-          <aside className="lg:col-span-4 space-y-8">
-            <div className="bg-primary p-10 text-on-primary relative overflow-hidden">
-              <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-              <span className="material-symbols-outlined text-secondary text-5xl mb-6 inline-block" style={{ fontVariationSettings: "'FILL' 1" }}>emergency_share</span>
-              <h3 className="font-headline-md text-2xl mb-3">Need Immediate Help?</h3>
-              <p className="text-on-primary/70 mb-8 leading-relaxed text-sm">
-                If you have witnessed or experienced an incident that violates this policy, our response team is available through the EOB.
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Legal Basis */}
+            <div className="bg-surface-container-low p-8 border border-outline-variant hover:border-primary/20 transition-all">
+              <div className="flex items-center gap-4 mb-6">
+                <span className="material-symbols-outlined text-primary bg-[#EBF2FA] p-3">gavel</span>
+                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider">Legal Basis</h3>
+              </div>
+              <p className="text-on-surface-variant text-sm leading-relaxed italic border-l-4 border-secondary pl-4 py-1">
+                "Grounded in the Constitution of the Republic of Ghana, the University of Ghana Act, 2010 (Act 806), CEDAW, the African Charter Protocol on Rights of Women, and the Beijing Platform for Action."
               </p>
-              <Link to="/report" className="block w-full bg-secondary text-white py-4 text-center font-bold text-[12px] uppercase tracking-widest hover:brightness-110 transition-all">
-                Submit a Complaint
-              </Link>
             </div>
 
-            <div className="bg-white border border-outline-variant p-8">
-              <h4 className="font-label-md uppercase tracking-[0.2em] text-[11px] text-on-surface-variant/60 mb-6 border-b border-outline-variant pb-2">
-                Policy Documents
-              </h4>
-              <div className="space-y-3">
+            {/* Special Measures */}
+            <div className="bg-primary/5 p-8 border border-primary/10 hover:border-primary/30 transition-all">
+              <div className="flex items-center gap-4 mb-6">
+                <span className="material-symbols-outlined text-primary bg-[#EBF2FA] p-3">diversity_3</span>
+                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider">Special Measures</h3>
+              </div>
+              <p className="text-on-surface-variant text-sm leading-relaxed">
+                The University may implement affirmative action measures to address historical imbalances in recruitment, promotion, and student admissions where gender disparities persist — without constituting a breach of the policy.
+              </p>
+            </div>
+
+            {/* Policy Documents */}
+            <div className="bg-white border border-outline-variant p-8 hover:shadow-sm transition-all">
+              <div className="flex items-center gap-4 mb-6 pb-4 border-b border-outline-variant">
+                <span className="material-symbols-outlined text-primary bg-[#EBF2FA] p-3">folder_open</span>
+                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider">Policy Documents</h3>
+              </div>
+              <div className="space-y-2">
                 {[
                   { icon: 'picture_as_pdf', label: 'Full Policy PDF', meta: '1.2 MB' },
                   { icon: 'article',        label: 'Implementation Guide', meta: '850 KB' },
                   { icon: 'quiz',           label: 'Policy FAQ', meta: 'LINK' },
                 ].map(({ icon, label, meta }) => (
-                  <a key={label} href="#" className="flex items-center justify-between p-4 hover:bg-surface-container smooth-transition group border border-transparent hover:border-outline-variant">
-                    <div className="flex items-center gap-4">
-                      <span className="material-symbols-outlined text-primary bg-primary/5 p-2 group-hover:scale-110 smooth-transition">{icon}</span>
+                  <a key={label} href="#" className="flex items-center justify-between p-3 hover:bg-surface-container smooth-transition group rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-primary text-xl group-hover:scale-110 smooth-transition">{icon}</span>
                       <span className="text-sm font-semibold text-on-surface">{label}</span>
                     </div>
                     <span className="text-[10px] font-bold text-on-surface-variant opacity-60">{meta}</span>
@@ -222,7 +213,31 @@ const Overview: React.FC = () => {
                 ))}
               </div>
             </div>
-          </aside>
+          </div>
+        </div>
+      </section>
+
+      {/* Immediate Help Banner */}
+      <section className="bg-primary text-on-primary py-20 px-6 md:px-12 relative overflow-hidden">
+        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-secondary opacity-10 rounded-full blur-3xl" />
+        <div className="page-lane relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-4">
+              <span className="material-symbols-outlined text-secondary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>emergency_share</span>
+              <h2 className="font-display-lg text-3xl">Need Immediate Help?</h2>
+            </div>
+            <p className="text-on-primary/70 text-sm max-w-lg leading-relaxed">
+              If you have witnessed or experienced an incident that violates this policy, our response team is available through the EOB. All complaints are handled in strict confidence.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <Link to="/report" className="bg-secondary text-white px-12 py-5 font-bold uppercase tracking-widest text-[12px] shadow-xl hover:brightness-110 transition-all text-center">
+              Submit a Complaint
+            </Link>
+            <Link to="/complaints" className="border border-on-primary/30 text-on-primary px-12 py-5 font-bold uppercase tracking-widest text-[12px] hover:bg-white/10 transition-all text-center">
+              View Procedure
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>
