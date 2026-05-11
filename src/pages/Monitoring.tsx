@@ -160,44 +160,39 @@ const Monitoring: React.FC = () => {
           <div className="bg-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm">
             <div className="bg-surface-container p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <h3 className="font-headline-md text-primary text-xl">Document Governance</h3>
-                <p className="text-sm text-on-surface-variant mt-1">Official policy lifecycle and amendment history</p>
+                <h3 className="font-headline-md text-primary text-xl">Policy Version Control</h3>
+                <p className="text-sm text-on-surface-variant mt-1">Official policy release and amendment history</p>
               </div>
-              <span className="text-[10px] font-bold tracking-widest uppercase py-1 px-3 bg-error-container text-on-error-container rounded-full">
-                Internal Only
+              <span className="text-[10px] font-bold tracking-widest uppercase py-1 px-3 bg-primary/10 text-primary rounded-full">
+                Pub. No. 975 · Vol. 60 No. 3
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left font-body-md border-collapse min-w-[600px]">
                 <thead>
-                  <tr className="bg-surface-container-low text-primary font-label-md border-b border-outline-variant/50">
-                    <th className="px-8 py-5">Version</th>
-                    <th className="px-8 py-5">Adopted</th>
-                    <th className="px-8 py-5">Approving Body</th>
-                    <th className="px-8 py-5">Revision Summary</th>
+                  <tr className="bg-surface-container-low text-primary font-label-md border-b-2 border-primary">
+                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Version</th>
+                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Release Date</th>
+                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Effective Date</th>
+                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Approved By</th>
+                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Amendment</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-outline-variant/30">
-                  <tr className="hover:bg-surface/50 transition-colors">
-                    <td className="px-8 py-6 font-bold text-primary">V 1.0</td>
-                    <td className="px-8 py-6 text-on-surface-variant">Oct 2012</td>
-                    <td className="px-8 py-6 font-medium">Centre for Gender Studies</td>
-                    <td className="px-8 py-6 text-on-surface-variant text-sm">Initial policy framework adopted by University Council.</td>
-                  </tr>
-                  <tr className="hover:bg-surface/50 transition-colors">
-                    <td className="px-8 py-6 font-bold text-primary">V 2.0</td>
-                    <td className="px-8 py-6 text-on-surface-variant">Jan 2018</td>
-                    <td className="px-8 py-6 font-medium">Institutional Review Com.</td>
-                    <td className="px-8 py-6 text-on-surface-variant text-sm">Expanded scope to include online harassment and digital inclusivity.</td>
-                  </tr>
-                  <tr className="bg-primary/[0.02] border-l-4 border-l-secondary">
-                    <td className="px-8 py-6 font-bold text-primary">V 3.0</td>
-                    <td className="px-8 py-6 text-on-surface-variant">June 2024</td>
-                    <td className="px-8 py-6 font-medium">EOB Administrator</td>
-                    <td className="px-8 py-6 text-on-surface-variant text-sm">Full structural alignment with modern M&E standards and legal basis updates.</td>
+                <tbody>
+                  <tr className="border-l-4 border-l-secondary bg-secondary/[0.02]">
+                    <td className="px-8 py-6 font-bold text-primary">1</td>
+                    <td className="px-8 py-6 text-on-surface-variant">March 14, 2023</td>
+                    <td className="px-8 py-6 text-on-surface-variant">August 11, 2022</td>
+                    <td className="px-8 py-6 font-medium text-primary">Council</td>
+                    <td className="px-8 py-6 text-on-surface-variant">—</td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div className="px-8 py-4 border-t border-outline-variant/30 bg-surface-container-low">
+              <p className="text-xs text-on-surface-variant">
+                Policy reviewed every <strong className="text-primary">5 years</strong>. Impact evaluated every <strong className="text-primary">4 years</strong>. Next review due approximately 2027.
+              </p>
             </div>
           </div>
         </div>

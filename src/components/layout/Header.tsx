@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 
+const NAV_LINKS = [
+  { to: '/',             label: 'Overview',     end: true },
+  { to: '/principles',   label: 'Principles',   end: false },
+  { to: '/definitions',  label: 'Definitions',  end: false },
+  { to: '/institutions', label: 'Institutions', end: false },
+  { to: '/complaints',   label: 'Complaints',   end: false },
+  { to: '/offences',     label: 'Offences',     end: false },
+  { to: '/monitoring',   label: 'Monitoring',   end: false },
+];
+
 const Header: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -12,92 +23,103 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile md:px-margin-desktop h-20 bg-surface border-b border-outline-variant shadow-none">
-      <div className="flex items-center gap-12">
-        <Link to="/" className="font-headline-lg text-[24px] font-bold text-primary tracking-tight">UG GENDER POLICY</Link>
-        <nav className="hidden lg:flex gap-8 items-center h-full pt-2">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-            }
+    <header className="fixed top-0 left-0 w-full z-50 bg-surface border-b border-outline-variant shadow-none">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-margin-mobile md:px-margin-desktop h-20">
+        {/* Brand */}
+        <div className="flex items-center gap-10">
+          <Link to="/" className="font-headline-lg text-[22px] font-bold text-primary tracking-tight shrink-0">
+            UG Gender Policy
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex gap-1 items-center h-full">
+            {NAV_LINKS.map(({ to, label, end }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                className={({ isActive }) =>
+                  isActive
+                    ? 'px-3 py-1.5 text-primary border-b-2 border-secondary font-bold text-[12px] uppercase tracking-wider'
+                    : 'px-3 py-1.5 text-on-surface-variant hover:text-primary transition-colors text-[12px] uppercase tracking-wider font-medium'
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        {/* Right controls */}
+        <div className="flex items-center gap-4">
+          {/* Search — xl only */}
+          <div className="relative hidden xl:block">
+            <input
+              className="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary w-64 smooth-transition text-sm"
+              placeholder="Search policy document…"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
+            />
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+          </div>
+
+          {/* Report CTA */}
+          <Link
+            to="/report"
+            className="hidden md:block bg-primary text-on-primary px-6 py-2.5 font-label-md text-[12px] uppercase tracking-widest transition-all hover:brightness-110 rounded-lg"
           >
-            Overview
-          </NavLink>
-          <NavLink
-            to="/principles"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-            }
-          >
-            Principles
-          </NavLink>
-          <NavLink
-            to="/institutions"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-            }
-          >
-            Institutions
-          </NavLink>
-          <NavLink
-            to="/definitions"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-            }
-          >
-            Definitions
-          </NavLink>
-          <NavLink
-            to="/complaints"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-            }
-          >
-            Complaints
-          </NavLink>
-          <NavLink
+            Report Incident
+          </Link>
+
+          {/* Admin — discreet */}
+          <Link
             to="/admin"
-            className={({ isActive }) =>
-              isActive
-                ? "text-primary border-b-2 border-secondary font-bold font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-                : "text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md uppercase tracking-wider pb-5 px-2"
-            }
+            className="hidden md:flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors text-[11px] uppercase tracking-widest font-bold"
+            title="Admin Portal"
           >
-            Admin
-          </NavLink>
+            <span className="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+          </Link>
+
+          {/* Mobile hamburger */}
+          <button
+            className="lg:hidden p-2 text-on-surface-variant hover:text-primary"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            <span className="material-symbols-outlined">{mobileOpen ? 'close' : 'menu'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <nav className="lg:hidden border-t border-outline-variant bg-surface px-4 pb-4">
+          {NAV_LINKS.map(({ to, label, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                `block px-4 py-3 text-[13px] uppercase tracking-wider font-medium border-b border-outline-variant last:border-0 ${
+                  isActive ? 'text-primary font-bold' : 'text-on-surface-variant'
+                }`
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+          <Link
+            to="/report"
+            onClick={() => setMobileOpen(false)}
+            className="mt-3 block text-center bg-primary text-on-primary px-6 py-3 font-bold text-[12px] uppercase tracking-widest rounded-lg"
+          >
+            Report Incident
+          </Link>
         </nav>
-      </div>
-      <div className="flex items-center gap-6">
-        <div className="relative hidden xl:block">
-          <input
-            className="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary w-72 smooth-transition text-sm"
-            placeholder="Search policy document..."
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleSearch}
-          />
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
-        </div>
-        <div className="flex gap-4">
-          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
-          <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="account_circle">account_circle</span>
-        </div>
-        <Link to="/report" className="hidden md:block bg-primary text-on-primary px-8 py-2.5 font-label-md text-label-md uppercase tracking-widest transition-all hover:bg-opacity-90 rounded-lg">
-          Report Incident
-        </Link>
-      </div>
+      )}
     </header>
   );
 };
