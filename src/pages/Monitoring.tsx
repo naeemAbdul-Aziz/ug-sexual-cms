@@ -59,7 +59,7 @@ const Monitoring: React.FC = () => {
 
       {/* M&E Framework Cards */}
       <section className="px-6 md:px-12 mb-24">
-        <div className="max-w-[1024px] mx-auto">
+        <div className="page-lane">
           <h2 className="font-headline-md text-2xl text-primary mb-8 pb-4 border-b border-outline-variant flex items-center gap-3">
             <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
             M&amp;E Framework Components
@@ -85,7 +85,7 @@ const Monitoring: React.FC = () => {
 
       {/* Promotion of the Gender Policy */}
       <section className="px-6 md:px-12 mb-24">
-        <div className="max-w-[1024px] mx-auto">
+        <div className="page-lane">
           <h2 className="font-headline-md text-2xl text-primary mb-8 pb-4 border-b border-outline-variant">
             Promotion of the Gender Policy
           </h2>
@@ -114,7 +114,7 @@ const Monitoring: React.FC = () => {
 
       {/* Version Control Table */}
       <section className="px-6 md:px-12 mb-16">
-        <div className="max-w-[1024px] mx-auto">
+        <div className="page-lane">
           <div className="bg-white border border-outline-variant overflow-hidden">
             <div className="bg-surface-container px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>

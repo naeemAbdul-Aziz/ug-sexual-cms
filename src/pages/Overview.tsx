@@ -59,24 +59,26 @@ const Overview: React.FC = () => {
     <Layout>
       {/* Publication Metadata Header */}
       <div className="bg-white px-margin-desktop py-4 border-b border-outline-variant">
-        <p className="text-on-surface-variant font-label-md tracking-wider flex items-center gap-2 text-sm">
-          <span className="w-2 h-2 rounded-full bg-secondary" />
-          University of Ghana Gender Policy, Pub. No. 975 · Vol. 60 No. 3 · 2023
-        </p>
+        <div className="page-lane">
+          <p className="text-on-surface-variant font-label-md tracking-wider flex items-center gap-2 text-sm">
+            <span className="w-2 h-2 rounded-full bg-secondary" />
+            University of Ghana Gender Policy, Pub. No. 975 · Vol. 60 No. 3 · 2023
+          </p>
+        </div>
       </div>
 
       {/* Hero Section */}
-      <section className="policy-gradient text-on-primary py-stack-lg px-margin-desktop relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <path d="M37.5,186c0-104.1,84.4-188.5,188.5-188.5S414.5,81.9,414.5,186S330.1,374.5,226,374.5S37.5,290.1,37.5,186z" fill="currentColor" />
+      <section className="bg-[#002652] text-white py-24 px-6 md:px-12 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <svg height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" width="100%">
+            <path d="M0 100 L100 0 L100 100 Z" fill="white" />
           </svg>
         </div>
-        <div className="max-w-container-max mx-auto relative z-10">
+        <div className="page-lane relative z-10">
           <span className="inline-block text-secondary-fixed font-bold text-[11px] uppercase tracking-widest mb-4">
-            University of Ghana · Gender Policy 2023
+            Institutional Policy · Gender Policy 2023
           </span>
-          <h1 className="font-display-lg text-display-lg leading-[1.1] animate-in fade-in slide-in-from-left duration-700 mb-6 max-w-3xl">
+          <h1 className="font-display-lg text-4xl md:text-5xl lg:text-6xl leading-[1.1] animate-in fade-in slide-in-from-left duration-700 mb-6 max-w-3xl">
             Building a Gender-Equitable University Community
           </h1>
           <p className="text-white/80 text-lg max-w-2xl leading-relaxed mb-10">
@@ -93,9 +95,9 @@ const Overview: React.FC = () => {
         </div>
       </section>
 
-      {/* Stats — gold left-border treatment */}
+      {/* Stats */}
       <section className="py-12 px-margin-desktop bg-white border-b border-outline-variant">
-        <div className="max-w-container-max mx-auto grid grid-cols-2 lg:grid-cols-4 gap-0 border border-outline-variant divide-x divide-outline-variant">
+        <div className="page-lane grid grid-cols-2 lg:grid-cols-4 gap-0 border border-outline-variant divide-x divide-outline-variant">
           {[
             { val: '13',      label: 'EOB members',        sub: 'Equal Opportunities Board' },
             { val: '4 yrs',   label: 'Evaluation cycle',   sub: 'Policy impact assessment' },
@@ -113,7 +115,7 @@ const Overview: React.FC = () => {
 
       {/* 4 Cards */}
       <section className="py-stack-lg px-margin-desktop bg-surface">
-        <div className="max-w-container-max mx-auto">
+        <div className="page-lane">
           <h2 className="font-label-md text-[11px] uppercase tracking-widest text-on-surface-variant mb-8">Policy Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {CARDS.map(({ icon, title, text }) => (
@@ -161,7 +163,7 @@ const Overview: React.FC = () => {
 
       {/* Right-column reading lane section */}
       <section className="py-stack-lg px-margin-desktop bg-white">
-        <div className="max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="page-lane grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left: Legal & Special Measures */}
           <div className="lg:col-span-8 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

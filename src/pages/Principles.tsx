@@ -54,15 +54,13 @@ const Principles: React.FC = () => {
   const toggle = (id: string) => setOpenSection(openSection === id ? null : id);
 
   return (
-    <Layout bgClass="bg-surface">
-      <div className="max-w-[1000px] mx-auto px-margin-mobile md:px-0 py-stack-lg">
+    <Layout bgClass="bg-white">
+      <div className="page-lane px-6 md:px-12 py-16">
         {/* Header */}
-        <div className="mb-stack-lg text-center max-w-2xl mx-auto">
-          <span className="inline-block text-secondary font-bold tracking-[0.2em] uppercase text-[11px] mb-4">
-            Institutional Framework
-          </span>
-          <h1 className="font-display-lg text-display-lg text-primary mb-6 leading-tight">Policy Principles</h1>
-          <p className="text-on-surface-variant leading-relaxed">
+        <div className="mb-12">
+          <p className="text-secondary font-bold text-[11px] uppercase tracking-widest mb-3">Section 05</p>
+          <h1 className="font-display-lg text-4xl md:text-5xl text-primary mb-4 leading-tight">Policy Principles</h1>
+          <p className="text-on-surface-variant text-base max-w-2xl">
             The four core principles guiding the University's gender commitments across all units and governance structures.
           </p>
         </div>

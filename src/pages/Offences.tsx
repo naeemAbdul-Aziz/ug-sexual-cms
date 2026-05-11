@@ -16,29 +16,26 @@ const OFFENCES = [
 
 const Offences: React.FC = () => {
   return (
-    <Layout bgClass="bg-surface">
+    <Layout bgClass="bg-white">
       {/* Hero */}
-      <section className="policy-gradient text-on-primary py-20 px-margin-desktop relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <path d="M37.5,186c0-104.1,84.4-188.5,188.5-188.5S414.5,81.9,414.5,186S330.1,374.5,226,374.5S37.5,290.1,37.5,186z" fill="currentColor" />
+      <section className="bg-[#002652] text-white py-24 px-6 md:px-12 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <svg height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" width="100%">
+            <path d="M0 100 L100 0 L100 100 Z" fill="white" />
           </svg>
         </div>
-        <div className="max-w-container-max mx-auto relative z-10">
-          <span className="inline-block bg-secondary/20 text-secondary-fixed border border-secondary/30 px-4 py-1 text-[11px] font-bold uppercase tracking-widest mb-6">
-            Appendix · Section 11
-          </span>
-          <h1 className="font-display-lg text-5xl md:text-6xl mb-6 leading-tight">Offences</h1>
-          <p className="text-white/80 text-lg max-w-2xl leading-relaxed">
-            Acts that constitute an offence under the University of Ghana Gender Policy. Any member of the University found responsible for any of the following may be subject to disciplinary action.
+        <div className="page-lane relative z-10">
+          <p className="text-secondary font-bold text-[11px] uppercase tracking-widest mb-3">Section 11</p>
+          <h1 className="font-display-lg text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight">Offences</h1>
+          <p className="text-white/80 text-base md:text-lg max-w-3xl leading-relaxed">
+            Acts that constitute an offence under this policy — derived from the official Policy Appendix.
           </p>
         </div>
       </section>
 
-      {/* Offence list */}
-      <section className="py-stack-lg px-margin-desktop">
-        <div className="max-w-container-max mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      {/* Content */}
+      <section className="px-6 md:px-12 py-24 bg-white">
+        <div className="page-lane grid grid-cols-1 lg:grid-cols-12 gap-16">
             {/* Main list */}
             <div className="lg:col-span-8">
               <h2 className="font-headline-lg text-primary text-2xl mb-10 uppercase tracking-widest">
@@ -130,8 +127,7 @@ const Offences: React.FC = () => {
               </Link>
             </aside>
           </div>
-        </div>
-      </section>
+        </section>
     </Layout>
   );
 };
