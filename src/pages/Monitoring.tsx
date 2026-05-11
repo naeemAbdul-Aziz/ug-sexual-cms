@@ -1,195 +1,153 @@
 import React from 'react';
 import Layout from '../components/layout/Layout';
 
+const CARDS = [
+  {
+    icon: 'event_note',
+    phase: 'Phase 01',
+    title: 'Annual Workplan & Budget',
+    body: 'EOB develops an Annual Workplan and Budget based on clear criteria, subject to approval by the University Council. The workplan and budget shall assist in setting targets for the delivery of outputs with linked inputs, activities and outcomes.',
+    footer: 'Frequency: Annual · Approved by Council',
+    footerIcon: 'calendar_today',
+  },
+  {
+    icon: 'fact_check',
+    phase: 'Phase 02',
+    title: 'Yearly Gender Audits',
+    body: 'The EOB undertakes yearly gender audits of the University in collaboration with CEGENSA and produces a report with recommendations to be submitted to the Vice-Chancellor for the consideration of the University Council.',
+    footer: 'Frequency: Annual · EOB & CEGENSA jointly',
+    footerIcon: 'verified',
+  },
+  {
+    icon: 'history_edu',
+    phase: 'Phase 03',
+    title: 'Policy Evaluation — Every 4 Years',
+    body: "The EOB shall evaluate the implementation and impact of the University's gender policies and practices on gender equality every four years.",
+    footer: 'Frequency: Every 4 Years',
+    footerIcon: 'update',
+  },
+  {
+    icon: 'description',
+    phase: 'Phase 04',
+    title: 'Gender Equality Annual Report',
+    body: "A Gender Equality Annual Report shall be published summarising cases handled and the report of the gender audit. Information on how the University's policies and practices affect gender equality shall be included.",
+    footer: 'Published Annually · Public Disclosure Required',
+    footerIcon: 'visibility',
+  },
+];
 
 const Monitoring: React.FC = () => {
   return (
     <Layout bgClass="bg-surface">
-      {/* Hero Section */}
-      <section className="bg-[#002652] text-white py-24 px-margin-mobile md:px-margin-desktop mb-stack-lg relative overflow-hidden">
+      {/* Hero */}
+      <section className="bg-[#002652] text-white py-24 px-6 md:px-12 mb-16 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <svg height="100%" preserveAspectRatio="none" viewBox="0 0 100 100" width="100%">
-            <path d="M0 100 L100 0 L100 100 Z" fill="white"></path>
+            <path d="M0 100 L100 0 L100 100 Z" fill="white" />
           </svg>
         </div>
         <div className="max-w-[1024px] mx-auto relative z-10">
-          <span className="font-label-md bg-secondary text-on-secondary px-4 py-1.5 rounded-full mb-6 inline-block tracking-wider uppercase text-xs">Section 8.0</span>
-          <h1 className="font-display-lg text-5xl md:text-6xl mb-6 leading-tight">Monitoring & Evaluation</h1>
-          <p className="font-body-lg text-surface-container-low max-w-2xl leading-relaxed opacity-90">
-            Establishing a rigorous framework for institutional accountability through continuous data synthesis, regular gender audits, and evidence-based impact assessment.
+          <span className="font-label-md bg-secondary text-on-secondary px-4 py-1.5 mb-6 inline-block tracking-wider uppercase text-xs">
+            Section 8.0
+          </span>
+          <h1 className="font-display-lg text-5xl md:text-6xl mb-6 leading-tight">Monitoring &amp; Evaluation</h1>
+          <p className="text-white/80 max-w-2xl leading-relaxed">
+            How the University tracks and evaluates the implementation of the Gender Policy.
           </p>
         </div>
       </section>
 
-      {/* Monitoring Framework Grid */}
-      <section className="px-margin-mobile md:px-margin-desktop mb-24">
+      {/* M&E Framework Cards */}
+      <section className="px-6 md:px-12 mb-24">
         <div className="max-w-[1024px] mx-auto">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="font-headline-md text-3xl text-primary flex items-center gap-4">
-              <span className="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container shadow-sm">
-                <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
-              </span>
-              M&E Framework Components
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            {/* Card 1: Annual Workplan */}
-            <div className="bg-gradient-to-br from-white to-[#f8faff] shadow-[0_4px_20px_-2px_rgba(0,38,82,0.05)] p-8 rounded-2xl border border-outline-variant/50 group hover:border-secondary/50 transition-all duration-300">
-              <div className="flex justify-between items-start mb-6">
-                <span className="material-symbols-outlined text-primary bg-primary-fixed p-3 rounded-xl">event_note</span>
-                <span className="text-xs font-bold text-outline uppercase tracking-widest">Phase 01</span>
+          <h2 className="font-headline-md text-2xl text-primary mb-8 pb-4 border-b border-outline-variant flex items-center gap-3">
+            <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>analytics</span>
+            M&amp;E Framework Components
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {CARDS.map(({ icon, phase, title, body, footer, footerIcon }) => (
+              <div key={phase} className="bg-white border border-outline-variant p-8 hover:border-secondary/40 hover:shadow-sm transition-all">
+                <div className="flex justify-between items-start mb-6">
+                  <span className="material-symbols-outlined text-primary bg-[#EBF2FA] p-3">{icon}</span>
+                  <span className="text-xs font-bold text-outline uppercase tracking-widest">{phase}</span>
+                </div>
+                <h3 className="font-bold text-primary text-lg mb-3">{title}</h3>
+                <p className="text-on-surface-variant text-sm leading-relaxed mb-8">{body}</p>
+                <div className="pt-5 border-t border-outline-variant flex items-center gap-3 text-secondary">
+                  <span className="material-symbols-outlined text-lg">{footerIcon}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{footer}</span>
+                </div>
               </div>
-              <h3 className="font-headline-md text-2xl text-primary mb-4">Annual Workplan & Budget</h3>
-              <p className="text-on-surface-variant leading-relaxed mb-8">
-                Development of comprehensive operational roadmaps and financial allocations dedicated to gender mainstreaming initiatives for each academic year.
-              </p>
-              <div className="pt-6 border-t border-outline-variant flex items-center gap-3 text-secondary font-label-md">
-                <span className="material-symbols-outlined text-lg">calendar_today</span>
-                <span>Frequency: Every August</span>
-              </div>
-            </div>
-
-            {/* Card 2: Yearly Gender Audits */}
-            <div className="bg-gradient-to-br from-white to-[#f8faff] shadow-[0_4px_20px_-2px_rgba(0,38,82,0.05)] p-8 rounded-2xl border border-outline-variant/50 group hover:border-secondary/50 transition-all duration-300">
-              <div className="flex justify-between items-start mb-6">
-                <span className="material-symbols-outlined text-primary bg-primary-fixed p-3 rounded-xl">fact_check</span>
-                <span className="text-xs font-bold text-outline uppercase tracking-widest">Phase 02</span>
-              </div>
-              <h3 className="font-headline-md text-2xl text-primary mb-4">Yearly Gender Audits</h3>
-              <p className="text-on-surface-variant leading-relaxed mb-8">
-                Systematic internal and external assessments of institutional structures to ensure compliance with policy directives and identify systemic gaps.
-              </p>
-              <div className="pt-6 border-t border-outline-variant flex items-center gap-3 text-secondary font-label-md">
-                <span className="material-symbols-outlined text-lg">verified</span>
-                <span>Frequency: Annual</span>
-              </div>
-            </div>
-
-            {/* Card 3: Policy Evaluation */}
-            <div className="bg-gradient-to-br from-white to-[#f8faff] shadow-[0_4px_20px_-2px_rgba(0,38,82,0.05)] p-8 rounded-2xl border border-outline-variant/50 group hover:border-secondary/50 transition-all duration-300">
-              <div className="flex justify-between items-start mb-6">
-                <span className="material-symbols-outlined text-primary bg-primary-fixed p-3 rounded-xl">history_edu</span>
-                <span className="text-xs font-bold text-outline uppercase tracking-widest">Phase 03</span>
-              </div>
-              <h3 className="font-headline-md text-2xl text-primary mb-4">Policy Evaluation</h3>
-              <p className="text-on-surface-variant leading-relaxed mb-8">
-                A deep-dive impact assessment conducted to measure long-term progress toward gender equality and revise policy goals based on current needs.
-              </p>
-              <div className="pt-6 border-t border-outline-variant flex items-center gap-3 text-secondary font-label-md">
-                <span className="material-symbols-outlined text-lg">update</span>
-                <span>Frequency: Every 4 Years</span>
-              </div>
-            </div>
-
-            {/* Card 4: Gender Equality Annual Report */}
-            <div className="bg-gradient-to-br from-white to-[#f8faff] shadow-[0_4px_20px_-2px_rgba(0,38,82,0.05)] p-8 rounded-2xl border border-outline-variant/50 group hover:border-secondary/50 transition-all duration-300">
-              <div className="flex justify-between items-start mb-6">
-                <span className="material-symbols-outlined text-primary bg-primary-fixed p-3 rounded-xl">description</span>
-                <span className="text-xs font-bold text-outline uppercase tracking-widest">Phase 04</span>
-              </div>
-              <h3 className="font-headline-md text-2xl text-primary mb-4">Gender Equality Annual Report</h3>
-              <p className="text-on-surface-variant leading-relaxed mb-8">
-                Publication of key performance indicators, progress narratives, and statistical data for transparent communication with stakeholders.
-              </p>
-              <div className="pt-6 border-t border-outline-variant flex items-center gap-3 text-secondary font-label-md">
-                <span className="material-symbols-outlined text-lg">visibility</span>
-                <span>Public Disclosure: Required</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Information & Dissemination Section */}
-      <section className="px-margin-mobile md:px-margin-desktop mb-24">
+      {/* Promotion of the Gender Policy */}
+      <section className="px-6 md:px-12 mb-24">
         <div className="max-w-[1024px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Dissemination */}
-            <div className="lg:col-span-5 space-y-8">
-              <div>
-                <h2 className="font-headline-md text-3xl text-primary mb-4">Information Dissemination</h2>
-                <p className="text-on-surface-variant text-lg">
-                  The University ensures that M&E findings are accessible to all members of the community through integrated communication channels.
-                </p>
+          <h2 className="font-headline-md text-2xl text-primary mb-8 pb-4 border-b border-outline-variant">
+            Promotion of the Gender Policy
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white border border-outline-variant p-8 hover:border-primary/30 transition-colors">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="material-symbols-outlined text-primary bg-[#EBF2FA] p-3" style={{ fontVariationSettings: "'FILL' 1" }}>campaign</span>
+                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider">Dissemination</h3>
               </div>
-              <ul className="space-y-6">
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant/30">
-                  <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined text-xl">groups</span>
-                  </span>
-                  <span className="font-label-md text-on-surface">University-wide Townhall Meetings</span>
-                </li>
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant/30">
-                  <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined text-xl">computer</span>
-                  </span>
-                  <span className="font-label-md text-on-surface">Digital Portal & E-Policy Repository</span>
-                </li>
-                <li className="flex items-center gap-5 p-4 rounded-xl hover:bg-surface-container-low transition-colors border border-transparent hover:border-outline-variant/30">
-                  <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined text-xl">newspaper</span>
-                  </span>
-                  <span className="font-label-md text-on-surface">Quarterly Faculty Bulletins</span>
-                </li>
-              </ul>
+              <p className="text-on-surface-variant text-sm leading-relaxed">
+                The EOB, with support from CEGENSA, shall outline and implement yearly activities to promote the dissemination of the Gender Policy throughout the University. Stakeholders (employees and students) shall be consulted periodically about their experiences of the policy.
+              </p>
             </div>
-
-            {/* Information Gathering Image */}
-            <div className="lg:col-span-7">
-              <div className="relative group aspect-[4/3] rounded-[2rem] overflow-hidden shadow-2xl ring-1 ring-outline-variant/20">
-                <img
-                  alt="University staff collaborating"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAho4sCSKxIeG-mIx4T2-pZNdTwobeabEIzb9sqI-Kq6i55CTMSAWCU-adbSD-sOi0SB2uUPYstdhRWeTZ5x6A-BHRJmiUIKrcBXwKJigf71AxGSFomSib7D3G5nTPz0yAQCXyIylWA_L_j5040B9pNJyAJyFrsDUaElB1UqUFr-pSSt9Vqzx24qCl5Pohg2oykMg3ciqtGLLsLpjlZLGoEYDf0psLTVcdo6AG0o42JjxB94r6UoBXbbPIk90OCWV5wOvBEQRi2v8E"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
-                <div className="absolute bottom-8 left-8 right-8 text-white">
-                  <p className="text-sm font-label-md opacity-80 uppercase tracking-widest mb-1">Strategic Review</p>
-                  <p className="text-lg font-headline-md">Collaborative Decision Making at UG</p>
-                </div>
+            <div className="bg-white border border-outline-variant p-8 hover:border-primary/30 transition-colors">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="material-symbols-outlined text-primary bg-[#EBF2FA] p-3" style={{ fontVariationSettings: "'FILL' 1" }}>storage</span>
+                <h3 className="font-bold text-primary text-[13px] uppercase tracking-wider">Gathering Information</h3>
               </div>
+              <p className="text-on-surface-variant text-sm leading-relaxed">
+                The EOB shall receive comments from the University community and gather information on gender issues and the application of the Gender Policy within the University. Information on how policies and practices affect gender equality shall be included in the Annual Report.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Version Control Table */}
-      <section className="px-margin-mobile md:px-margin-desktop mb-stack-lg">
+      <section className="px-6 md:px-12 mb-16">
         <div className="max-w-[1024px] mx-auto">
-          <div className="bg-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm">
-            <div className="bg-surface-container p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="bg-white border border-outline-variant overflow-hidden">
+            <div className="bg-surface-container px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <h3 className="font-headline-md text-primary text-xl">Policy Version Control</h3>
+                <h3 className="font-bold text-primary text-lg">Policy Version Control</h3>
                 <p className="text-sm text-on-surface-variant mt-1">Official policy release and amendment history</p>
               </div>
-              <span className="text-[10px] font-bold tracking-widest uppercase py-1 px-3 bg-primary/10 text-primary rounded-full">
+              <span className="text-[10px] font-bold tracking-widest uppercase py-1 px-3 bg-primary/10 text-primary">
                 Pub. No. 975 · Vol. 60 No. 3
               </span>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left font-body-md border-collapse min-w-[600px]">
+              <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
-                  <tr className="bg-surface-container-low text-primary font-label-md border-b-2 border-primary">
-                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Version</th>
-                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Release Date</th>
-                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Effective Date</th>
-                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Approved By</th>
-                    <th className="px-8 py-5 font-bold text-[11px] uppercase tracking-widest">Amendment</th>
+                  <tr className="bg-surface-container-low text-primary border-b-2 border-primary">
+                    <th className="px-8 py-4 font-bold text-[11px] uppercase tracking-widest">Version</th>
+                    <th className="px-8 py-4 font-bold text-[11px] uppercase tracking-widest">Release Date</th>
+                    <th className="px-8 py-4 font-bold text-[11px] uppercase tracking-widest">Effective Date</th>
+                    <th className="px-8 py-4 font-bold text-[11px] uppercase tracking-widest">Approved By</th>
+                    <th className="px-8 py-4 font-bold text-[11px] uppercase tracking-widest">Amendment</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-l-4 border-l-secondary bg-secondary/[0.02]">
-                    <td className="px-8 py-6 font-bold text-primary">1</td>
-                    <td className="px-8 py-6 text-on-surface-variant">March 14, 2023</td>
-                    <td className="px-8 py-6 text-on-surface-variant">August 11, 2022</td>
-                    <td className="px-8 py-6 font-medium text-primary">Council</td>
-                    <td className="px-8 py-6 text-on-surface-variant">—</td>
+                    <td className="px-8 py-5 font-bold text-primary">1</td>
+                    <td className="px-8 py-5 text-on-surface-variant text-sm">March 14, 2023</td>
+                    <td className="px-8 py-5 text-on-surface-variant text-sm">August 11, 2022</td>
+                    <td className="px-8 py-5 font-medium text-primary text-sm">Council</td>
+                    <td className="px-8 py-5 text-on-surface-variant text-sm">—</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div className="px-8 py-4 border-t border-outline-variant/30 bg-surface-container-low">
+            <div className="px-8 py-4 border-t border-outline-variant bg-surface-container-low">
               <p className="text-xs text-on-surface-variant">
                 Policy reviewed every <strong className="text-primary">5 years</strong>. Impact evaluated every <strong className="text-primary">4 years</strong>. Next review due approximately 2027.
               </p>

@@ -33,7 +33,13 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
   }
   .policy-reading-lane {
-      max-width: 800px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  /* Wide lane for full-content pages (Definitions, Complaints) */
+  .page-lane {
+      max-width: 1280px;
       margin-left: auto;
       margin-right: auto;
   }
