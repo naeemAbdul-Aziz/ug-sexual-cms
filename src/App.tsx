@@ -7,6 +7,9 @@ import Offences from './pages/Offences';
 import Monitoring from './pages/Monitoring';
 import Definitions from './pages/Definitions';
 import ReportIncident from './pages/ReportIncident';
+import SearchResults from './pages/SearchResults';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminDocuments from './pages/AdminDocuments';
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
         <Route path="/offences" element={<Offences />} />
         <Route path="/monitoring" element={<Monitoring />} />
         <Route path="/report" element={<ReportIncident />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/documents" element={<AdminDocuments />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

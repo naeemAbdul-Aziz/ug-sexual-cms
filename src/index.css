@@ -64,3 +64,33 @@ input:focus, select:focus, textarea:focus {
 details summary::-webkit-details-marker {
     display: none;
 }
+
+/* Search Results Cards */
+.result-card {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 38, 82, 0.05), 0 8px 10px -6px rgba(0, 38, 82, 0.05);
+}
+mark {
+    background-color: rgba(254, 217, 119, 0.3); /* Subtle institutional gold */
+    color: #0b1c30;
+    font-weight: 600;
+    padding: 0 4px;
+    border-radius: 4px;
+}
+
+/* Admin Theme */
+.active-nav-fill {
+    font-variation-settings: 'FILL' 1;
+}
+.admin-theme * {
+    border-radius: 0 !important;
+}
+
+/* Admin Document Styles */
+.sidebar-item-active {
+    border-left: 3px solid #002652;
+    background-color: #f1f5f9;
+}
