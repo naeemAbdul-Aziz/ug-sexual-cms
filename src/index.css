@@ -94,3 +94,18 @@ mark {
     border-left: 3px solid #002652;
     background-color: #f1f5f9;
 }
+
+/* Custom horizontal connector for hierarchy */
+.hierarchy-line-h {
+    height: 1px;
+    background-color: #c3c6d2;
+    width: 66.6%;
+    margin: 0 auto;
+}
+/* Custom vertical connector for hierarchy */
+.hierarchy-line-v {
+    width: 1px;
+    height: 20px;
+    background-color: #c3c6d2;
+    margin: 0 auto;
+}
