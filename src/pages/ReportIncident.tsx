@@ -27,17 +27,18 @@ const EVIDENCE_OPTIONS = [
   { id: 'other', label: 'Other documentary evidence' },
 ];
 
+// Aligned 1:1 with the 9 official offences defined in src/pages/Offences.tsx
 const INCIDENT_TYPES = [
-  { value: 'sexist_remarks', label: 'Sexist remarks' },
-  { value: 'promotion_denial', label: 'Denial of promotion/grade on gender grounds' },
-  { value: 'dismissal', label: 'Dismissal / sanctions / threats on gender grounds' },
-  { value: 'pregnancy', label: 'Pregnancy discrimination' },
-  { value: 'care_leave', label: 'Denial of care leave' },
-  { value: 'gender_rules', label: 'Gender-disadvantaging rules/policies' },
-  { value: 'gbv', label: 'Gender-based violence (physical, psychological, sexual)' },
-  { value: 'unfair_treatment', label: 'Unfair treatment based on gender' },
-  { value: 'frustrating_complaint', label: 'Frustrating / refusing to address a complaint' },
-  { value: 'other', label: 'Other / Unsure' },
+  { value: 'sexist_remarks',    label: 'Sexist remarks (in private or public)' },
+  { value: 'promotion_denial',  label: 'Denial of promotion, grade, or award on grounds of gender' },
+  { value: 'dismissal',         label: 'Dismissal, sanctions, threats, or denial of privileges on grounds of gender or for having reported an incident' },
+  { value: 'pregnancy',         label: 'Discrimination on the basis of pregnancy or pregnancy-related conditions' },
+  { value: 'care_leave',        label: 'Denial of entitled care leave (childcare/elder care) on grounds of gender' },
+  { value: 'gender_rules',      label: 'Introduction of rules with conscious or unconscious negative gender impact' },
+  { value: 'gbv',               label: 'Gender-based violence (physical, psychological, emotional, economic, or sexual — including coercive or transactional sex, rape, or sexual assault)' },
+  { value: 'unfair_treatment',  label: 'Unfair treatment of a member (including subordinates or students) on the basis of gender' },
+  { value: 'frustrating',       label: 'Refusing, delaying, or frustrating attempts to address a complaint of gender discrimination' },
+  { value: 'other',             label: 'Other / Unsure' },
 ];
 
 const genRef = () => {
@@ -83,12 +84,30 @@ const ReportIncident: React.FC = () => {
           <p className="text-on-surface-variant mb-8 leading-relaxed">
             Your complaint has been received and will be handled with strict confidentiality by the EOB Secretariat.
           </p>
-          <div className="bg-white border-2 border-secondary p-8 mb-8 text-left">
+          <div className="bg-white border-2 border-secondary p-8 mb-6 text-left">
             <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Reference Number</p>
             <p className="font-display-lg text-3xl text-primary font-bold">{ref}</p>
             <p className="text-on-surface-variant text-sm mt-3">
-              Keep this reference number for your records. The EOB will acknowledge your complaint within <strong className="text-primary">7 working days</strong> and the investigation will be completed within <strong className="text-primary">21 working days</strong>.
+              Keep this reference number for your records. The EOB Secretariat will acknowledge your complaint within <strong className="text-primary">7 working days</strong> and the investigation will be completed within <strong className="text-primary">21 working days</strong>.
             </p>
+          </div>
+          {/* What happens next — mirrors Admin Case lifecycle */}
+          <div className="bg-surface-container-low border border-outline-variant p-6 mb-8 text-left space-y-4">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-secondary mb-4">What Happens Next</p>
+            {[
+              { icon: 'person_search',    label: 'Case Officer Assigned',   desc: 'A dedicated EOB Case Officer will be assigned to your case and will contact you within 7 working days.' },
+              { icon: 'gavel',            label: 'Investigation Opened',     desc: 'If your complaint proceeds to formal adjudication, a 3-member Adjudication Panel will be constituted.' },
+              { icon: 'timer',            label: '21-Day Resolution Window', desc: 'The formal investigation will be concluded within 21 working days. You will receive notice of any hearing at least 7 working days in advance.' },
+              { icon: 'lock',             label: 'Strict Confidentiality',   desc: 'All parties — including you, the respondent, and any witnesses — are bound by confidentiality throughout proceedings.' },
+            ].map(({ icon, label, desc }) => (
+              <div key={label} className="flex items-start gap-4">
+                <span className="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">{icon}</span>
+                <div>
+                  <p className="font-bold text-primary text-[12px] uppercase tracking-wide">{label}</p>
+                  <p className="text-on-surface-variant text-sm mt-0.5 leading-relaxed">{desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button

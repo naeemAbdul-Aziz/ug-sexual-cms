@@ -2,6 +2,7 @@ import React from 'react';
 import AdminLayout from '../components/layout/AdminLayout';
 
 const AdminCases: React.FC = () => {
+  // offenceType values mirror INCIDENT_TYPES.value from ReportIncident.tsx
   const rows = [
     { 
       id: '#GBC-24-0812', 
@@ -12,6 +13,7 @@ const AdminCases: React.FC = () => {
       statusCls: 'bg-blue-50 text-blue-800 border-blue-200',   
       officer: 'Dr. Abena Mensah',
       type: 'Formal',
+      offenceType: 'Sexist Remarks',
       daysLeft: 12,
       priority: 'High'
     },
@@ -24,6 +26,7 @@ const AdminCases: React.FC = () => {
       statusCls: 'bg-amber-50 text-amber-800 border-amber-200', 
       officer: 'Prof. Kwame Owusu',
       type: 'Formal',
+      offenceType: 'Gender-Based Violence',
       daysLeft: 18,
       priority: 'Medium'
     },
@@ -36,6 +39,7 @@ const AdminCases: React.FC = () => {
       statusCls: 'bg-rose-50 text-rose-800 border-rose-200',    
       officer: 'Sarah Boateng',
       type: 'Informal',
+      offenceType: 'Unfair Treatment on Gender Grounds',
       daysLeft: null,
       priority: 'Low'
     },
@@ -48,6 +52,7 @@ const AdminCases: React.FC = () => {
       statusCls: 'bg-slate-100 text-slate-800 border-slate-200', 
       officer: 'Dr. Abena Mensah',
       type: 'Formal',
+      offenceType: 'Denial of Promotion / Grade',
       daysLeft: 2,
       priority: 'Critical'
     },
@@ -63,7 +68,7 @@ const AdminCases: React.FC = () => {
             <div className="flex items-center gap-4 text-on-surface-variant text-sm">
               <span>Academic Year 2024/2025</span>
               <span className="w-1 h-1 bg-outline rounded-full" />
-              <span>{rows.length} Active Records</span>
+              <span>Showing {rows.length} of 53 Active Records</span>
             </div>
           </div>
           <div className="flex gap-4">
@@ -91,7 +96,24 @@ const AdminCases: React.FC = () => {
 
         {/* Filters */}
         <div className="mb-6 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-outline-variant pb-6">
-          <div className="flex items-center gap-10">
+          <div className="flex flex-wrap items-center gap-8">
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Offence Type</label>
+              <select className="border-0 p-0 bg-transparent font-bold text-primary focus:ring-0 cursor-pointer uppercase text-[12px] tracking-wider outline-none shadow-none">
+                <option>All Offence Types</option>
+                <option value="sexist_remarks">Sexist Remarks</option>
+                <option value="promotion_denial">Denial of Promotion / Grade</option>
+                <option value="dismissal">Dismissal / Sanctions / Threats</option>
+                <option value="pregnancy">Pregnancy Discrimination</option>
+                <option value="care_leave">Denial of Care Leave</option>
+                <option value="gender_rules">Gender-Disadvantaging Rules</option>
+                <option value="gbv">Gender-Based Violence</option>
+                <option value="unfair_treatment">Unfair Treatment on Gender Grounds</option>
+                <option value="frustrating">Frustrating / Refusing a Complaint</option>
+                <option value="other">Other / Unsure</option>
+              </select>
+            </div>
+            <div className="w-px h-8 bg-outline-variant" />
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Case Type</label>
               <select className="border-0 p-0 bg-transparent font-bold text-primary focus:ring-0 cursor-pointer uppercase text-[12px] tracking-wider outline-none shadow-none">
@@ -107,7 +129,8 @@ const AdminCases: React.FC = () => {
                 <option>Any Priority</option>
                 <option>Critical</option>
                 <option>High</option>
-                <option>Normal</option>
+                <option>Medium</option>
+                <option>Low</option>
               </select>
             </div>
           </div>
@@ -118,7 +141,7 @@ const AdminCases: React.FC = () => {
           <table className="w-full text-left border-collapse min-w-[1000px]">
             <thead>
               <tr className="text-on-surface-variant border-b border-outline-variant bg-surface-container-low">
-                {['Reference ID', 'Type', 'Party', 'Deadline (21 Days)', 'Process Status', 'Action'].map((h, i) => (
+                {['Reference ID', 'Type', 'Party / Offence', 'Deadline (21 Days)', 'Process Status', 'Action'].map((h, i) => (
                   <th key={h} className={`py-5 px-6 font-bold text-[10px] uppercase tracking-[0.2em] ${i === 5 ? 'text-right' : ''}`}>{h}</th>
                 ))}
               </tr>
@@ -138,7 +161,10 @@ const AdminCases: React.FC = () => {
                   <td className="py-7 px-6">
                     <div className="flex items-center gap-3">
                       <div className={`w-1.5 h-4 ${row.accent}`} />
-                      <span className="font-medium text-on-surface text-sm">{row.party}</span>
+                      <div>
+                        <span className="font-medium text-on-surface text-sm block">{row.party}</span>
+                        <span className="text-[10px] text-on-surface-variant mt-0.5 block">{row.offenceType}</span>
+                      </div>
                     </div>
                   </td>
                   <td className="py-7 px-6">

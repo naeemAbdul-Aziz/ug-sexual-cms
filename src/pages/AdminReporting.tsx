@@ -12,10 +12,10 @@ const AdminReporting: React.FC = () => (
       {/* Stat cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-outline-variant border border-outline-variant mb-12 overflow-hidden">
         {[
-          { label: 'Cases Resolved',    value: '47',  sub: 'Academic Year 24/25', cls: 'text-primary' },
-          { label: 'Avg. Resolution',   value: '14d', sub: 'Within 21-day window', cls: 'text-primary' },
-          { label: 'Gender Audits Done', value: '3',  sub: 'Since policy adoption', cls: 'text-primary' },
-          { label: 'Policy Compliance', value: '94%', sub: 'Across all units',     cls: 'text-primary' },
+          { label: 'Cases Resolved',    value: '47',  sub: 'Academic Year 2024/2025', cls: 'text-primary' },
+          { label: 'Avg. Resolution',   value: '14d', sub: 'Within 21-day window',    cls: 'text-primary' },
+          { label: 'Gender Audits Done', value: '3',  sub: 'Since policy adoption',   cls: 'text-primary' },
+          { label: 'Policy Compliance', value: '94%', sub: 'Across all units',        cls: 'text-primary' },
         ].map(({ label, value, sub, cls }) => (
           <div key={label} className="bg-white p-10 flex flex-col justify-between h-44 hover:bg-surface-container-low transition-colors">
             <span className="text-on-surface-variant font-bold tracking-[0.2em] text-[10px] uppercase">{label}</span>
