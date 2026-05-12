@@ -29,15 +29,15 @@ const EVIDENCE_OPTIONS = [
 
 // Aligned 1:1 with the 9 official offences defined in src/pages/Offences.tsx
 const INCIDENT_TYPES = [
-  { value: 'sexist_remarks',    label: 'Sexist remarks (in private or public)' },
-  { value: 'promotion_denial',  label: 'Denial of promotion, grade, or award on grounds of gender' },
-  { value: 'dismissal',         label: 'Dismissal, sanctions, threats, or denial of privileges on grounds of gender or for having reported an incident' },
-  { value: 'pregnancy',         label: 'Discrimination on the basis of pregnancy or pregnancy-related conditions' },
-  { value: 'care_leave',        label: 'Denial of entitled care leave (childcare/elder care) on grounds of gender' },
-  { value: 'gender_rules',      label: 'Introduction of rules with conscious or unconscious negative gender impact' },
-  { value: 'gbv',               label: 'Gender-based violence (physical, psychological, emotional, economic, or sexual — including coercive or transactional sex, rape, or sexual assault)' },
-  { value: 'unfair_treatment',  label: 'Unfair treatment of a member (including subordinates or students) on the basis of gender' },
-  { value: 'frustrating',       label: 'Refusing, delaying, or frustrating attempts to address a complaint of gender discrimination' },
+  { value: 'sexist_remarks',    label: 'Make sexist remarks to one or more persons in private or in public.' },
+  { value: 'promotion_denial',  label: "Deny anyone a promotion, grade, or award on grounds of one's gender." },
+  { value: 'dismissal',         label: "Dismiss, terminate an employee's contract, apply sanctions, deny privileges, opportunities or grades, or threaten same on grounds of one's gender — or on the basis that the person has complained or reported an incident of gender discrimination or passed a fair comment on any matter, including an issue bordering on the application of this policy." },
+  { value: 'pregnancy',         label: 'Discriminate against a member of the University on the basis of pregnancy or pregnancy-related conditions.' },
+  { value: 'care_leave',        label: "Deny an employee entitled to leave for care work (childcare/elder care) on grounds of the person's gender (e.g. denying a male entitled to leave for care work)." },
+  { value: 'gender_rules',      label: 'Introduce rules that consciously or unconsciously have or are likely to have a negative impact on a person or group of persons of one gender.' },
+  { value: 'gbv',               label: 'Subject a person to an act of gender-based violence whether physical (including assault, deprivation of liberty), psychological, emotional, economic or sexual in nature, including coercive or transactional sex, rape or sexual assault.' },
+  { value: 'unfair_treatment',  label: "Subject a member of the University including a subordinate or student to unfair treatment on the basis of the person's gender." },
+  { value: 'frustrating',       label: 'Refuse, delay without just cause, or frustrate attempts to address a complaint or report of gender discrimination.' },
   { value: 'other',             label: 'Other / Unsure' },
 ];
 
@@ -88,7 +88,7 @@ const ReportIncident: React.FC = () => {
             <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Reference Number</p>
             <p className="font-display-lg text-3xl text-primary font-bold">{ref}</p>
             <p className="text-on-surface-variant text-sm mt-3">
-              Keep this reference number for your records. The EOB Secretariat will acknowledge your complaint within <strong className="text-primary">7 working days</strong> and the investigation will be completed within <strong className="text-primary">21 working days</strong>.
+              Keep this reference number for your records. You will be notified of your assigned EOB Case Officer within <strong className="text-primary">7 working days</strong> and the investigation will be completed within <strong className="text-primary">21 working days</strong>.
             </p>
           </div>
           {/* What happens next — mirrors Admin Case lifecycle */}
