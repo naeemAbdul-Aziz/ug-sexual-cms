@@ -20,6 +20,20 @@ const AdminDefinitions: React.FC = () => {
 
   useEffect(() => {
     fetchDefinitions();
+
+    // Realtime subscription for definitions update
+    const channel = supabase
+      .channel('admin-definitions')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'definitions' },
+        () => fetchDefinitions()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchDefinitions = async () => {

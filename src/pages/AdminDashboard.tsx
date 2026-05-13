@@ -73,6 +73,20 @@ const AdminDashboard: React.FC = () => {
     };
 
     fetchDashboardData();
+
+    // Realtime subscription for stats update
+    const channel = supabase
+      .channel('dashboard-stats')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'cases' },
+        () => fetchDashboardData()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const getStatusCls = (status: string) => {
