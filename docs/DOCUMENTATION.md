@@ -61,18 +61,14 @@ The UG Gender Policy Case Management System is built on a modern, decoupled web 
   - **Public Zone (`/`)**: Educational content, definitions, policy principles, and the reporting portal.
   - **Admin Zone (`/admin/*`)**: Secure, authenticated case registry, dashboards, and reporting metrics.
 
-### Backend Layer (API & Logic)
-*(Conceptual Architecture for implementation)*
-- **API Architecture**: RESTful or GraphQL endpoints serving the frontend.
-- **Authentication**: Role-Based Access Control (RBAC) utilizing JWT tokens (Admin vs. EOB Officer vs. System Admin).
+### Backend Layer (Supabase)
+The system leverages **Supabase** for a unified backend-as-a-service:
+- **API Architecture**: Auto-generated RESTful API via PostgREST.
+- **Authentication**: Supabase Auth (GoTrue) with Row Level Security (RLS).
 - **Core Services**:
-  - **Case Management Service**: Handles the creation, state transitions, and SLA tracking (21-day window) of complaints.
-  - **Notification Service**: Manages email alerts (e.g., 7-day acknowledgement, hearing notices) to complainants and officers.
-  - **Analytics Service**: Aggregates data for the `AdminReporting` dashboard.
-
-### Database Layer
-- **Relational Database**: PostgreSQL (or similar) is recommended to enforce strict schema constraints and relational integrity between `Cases`, `Parties`, `Officers`, and `Evidence`.
-- **File Storage**: Secure blob storage (e.g., AWS S3) for uploaded evidentiary documents (PDFs, images, videos), ensuring encrypted at-rest storage given the highly sensitive nature of gender-based violence and discrimination complaints.
+  - **Case Management**: Handled via PostgreSQL with RLS policies.
+  - **Storage**: Supabase Storage for encrypted evidentiary documents (PDFs, images, videos).
+  - **Email**: Integrated via Supabase Auth (local testing via Mailpit).
 
 ---
 

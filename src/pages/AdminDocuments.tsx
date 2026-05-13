@@ -1,8 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '../components/layout/AdminLayout';
+import { supabase } from '../lib/supabase';
+
+interface PolicyDocument {
+  icon: string;
+  file: string;
+  badge: string;
+  badgeCls: string;
+  label: string;
+  principal: string;
+  date: string;
+  url: string;
+}
 
 const AdminDocuments: React.FC = () => {
+  const [documents, setDocuments] = useState<PolicyDocument[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('policy_documents')
+        .select('*')
+        .order('effective_date', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching documents:', error);
+      } else if (data) {
+        setDocuments(data.map(d => ({
+          icon: 'description',
+          file: `UG_Gender_Policy_v${d.version_number}.pdf`,
+          badge: 'Policies',
+          badgeCls: 'bg-surface-container-high text-on-surface-variant border-outline-variant',
+          label: 'Verified • PDF',
+          principal: 'Academic Board',
+          date: new Date(d.effective_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          url: d.storage_uri
+        })));
+      }
+      setLoading(false);
+    };
+
+    fetchDocuments();
+  }, []);
+
   return (
     <AdminLayout pageTitle="Archives & Governance">
       <div className="px-10 py-10 max-w-full">
@@ -26,25 +69,25 @@ const AdminDocuments: React.FC = () => {
           </button>
         </div>
 
-        {/* Stats */}
+        {/* Stats (Semi-static for now based on known stats) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant border border-outline-variant mb-12 overflow-hidden">
           <div className="bg-white p-8 flex flex-col gap-1">
             <span className="font-label-md text-[11px] uppercase tracking-widest text-on-surface-variant">Global Records</span>
             <div className="font-display-lg text-[36px] text-primary leading-none mt-2">
-              142,000 <span className="text-sm font-body-md text-on-surface-variant tracking-normal">units</span>
+              {documents.length} <span className="text-sm font-body-md text-on-surface-variant tracking-normal">versions</span>
             </div>
           </div>
           <div className="bg-white p-8 flex flex-col gap-1">
-            <span className="font-label-md text-[11px] uppercase tracking-widest text-on-surface-variant">Monthly Throughput</span>
+            <span className="font-label-md text-[11px] uppercase tracking-widest text-on-surface-variant">Active Policy</span>
             <div className="font-display-lg text-[36px] text-primary leading-none mt-2">
-              +1,280 <span className="text-sm font-body-md text-secondary font-semibold tracking-normal">verified</span>
+              v{documents[0]?.file.split('_v')[1]?.split('.pdf')[0] || '3.0'} <span className="text-sm font-body-md text-secondary font-semibold tracking-normal">verified</span>
             </div>
           </div>
           <div className="bg-white p-8 flex flex-col gap-1">
             <span className="font-label-md text-[11px] uppercase tracking-widest text-on-surface-variant">Vault Integrity</span>
-            <div className="font-display-lg text-[36px] text-primary leading-none mt-2">42%</div>
+            <div className="font-display-lg text-[36px] text-primary leading-none mt-2">100%</div>
             <div className="w-full bg-surface-container-high h-[2px] mt-2">
-              <div className="bg-primary h-full" style={{ width: '42%' }} />
+              <div className="bg-primary h-full" style={{ width: '100%' }} />
             </div>
           </div>
         </div>
@@ -59,10 +102,10 @@ const AdminDocuments: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: 'account_balance', label: 'Policy Frameworks',  count: 24, iconCls: 'text-primary',   borderCls: 'border-primary/20',   hoverCls: 'group-hover:bg-primary group-hover:text-white',   desc: 'Standard operating procedures and institutional statutes.' },
-              { icon: 'lock_open',       label: 'Case Evidence',       count: 86, iconCls: 'text-error',    borderCls: 'border-error/20',     hoverCls: 'group-hover:bg-error group-hover:text-white',     desc: 'Encrypted deposition records and forensic data.' },
-              { icon: 'analytics',       label: 'Audit Reports',       count: 12, iconCls: 'text-secondary', borderCls: 'border-secondary/20', hoverCls: 'group-hover:bg-secondary group-hover:text-white', desc: 'Annual compliance certifications and findings.' },
-              { icon: 'menu_book',       label: 'Educational',         count: 20, iconCls: 'text-on-surface-variant', borderCls: 'border-outline',     hoverCls: 'group-hover:bg-on-surface-variant group-hover:text-white', desc: 'Training modules for governance and ethics.' },
+              { icon: 'account_balance', label: 'Policy Frameworks',  count: documents.length, iconCls: 'text-primary',   borderCls: 'border-primary/20',   hoverCls: 'group-hover:bg-primary group-hover:text-white',   desc: 'Standard operating procedures and institutional statutes.' },
+              { icon: 'lock_open',       label: 'Case Evidence',       count: 0, iconCls: 'text-error',    borderCls: 'border-error/20',     hoverCls: 'group-hover:bg-error group-hover:text-white',     desc: 'Encrypted deposition records and forensic data.' },
+              { icon: 'analytics',       label: 'Audit Reports',       count: 0, iconCls: 'text-secondary', borderCls: 'border-secondary/20', hoverCls: 'group-hover:bg-secondary group-hover:text-white', desc: 'Annual compliance certifications and findings.' },
+              { icon: 'menu_book',       label: 'Educational',         count: 0, iconCls: 'text-on-surface-variant', borderCls: 'border-outline',     hoverCls: 'group-hover:bg-on-surface-variant group-hover:text-white', desc: 'Training modules for governance and ethics.' },
             ].map(({ icon, label, count, iconCls, borderCls, hoverCls, desc }) => (
               <Link key={label} to="#" className="group border border-outline-variant p-8 bg-white hover:bg-surface-container-low transition-all flex flex-col gap-5 outline-none">
                 <div className={`w-10 h-10 border flex items-center justify-center transition-colors ${iconCls} ${borderCls} ${hoverCls}`}>
@@ -84,7 +127,7 @@ const AdminDocuments: React.FC = () => {
         {/* Recent activity table */}
         <section className="border-t border-outline-variant pt-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-            <h3 className="font-bold text-primary text-[15px] uppercase tracking-widest">Recent Activity</h3>
+            <h3 className="font-bold text-primary text-[15px] uppercase tracking-widest">Policy Archive</h3>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
@@ -94,68 +137,64 @@ const AdminDocuments: React.FC = () => {
                   type="text"
                 />
               </div>
-              <button className="px-6 py-3 border border-outline-variant font-bold text-[11px] flex items-center gap-2 hover:bg-surface-container-low transition-colors text-on-surface-variant uppercase tracking-widest outline-none shadow-none">
-                <span className="material-symbols-outlined text-[16px]">tune</span>
-                Filter
-              </button>
             </div>
           </div>
 
           <div className="overflow-x-auto border border-outline-variant bg-white">
-            <table className="w-full text-left border-collapse min-w-[700px]">
-              <thead>
-                <tr className="border-b-2 border-primary">
-                  {['Document Title', 'Category', 'Principal', 'Revision Date', 'Actions'].map((h, i) => (
-                    <th key={h} className={`py-4 px-6 font-bold text-[11px] uppercase tracking-widest text-primary ${i === 4 ? 'text-right' : ''}`}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant">
-                {[
-                  { icon: 'description', file: 'UG_Gender_Policy_v3.0.pdf',       badge: 'Policies', badgeCls: 'bg-surface-container-high text-on-surface-variant border-outline-variant', label: 'Verified • PDF',      principal: 'Dr. Mensah',       date: '12 Oct 2023' },
-                  { icon: 'folder_zip',  file: 'Evidence_Log_GBC-2024-089.zip',   badge: 'Evidence', badgeCls: 'bg-error-container text-on-error-container border-error/20',           label: 'Restricted • ARCHIVE', principal: 'Investigator',     date: '10 Oct 2023' },
-                  { icon: 'article',     file: 'Q3_Gender_Audit_Final.docx',       badge: 'Audits',   badgeCls: 'bg-secondary-container text-on-secondary-container border-secondary/20',label: 'Internal • DOCUMENT',  principal: 'Audit Committee',  date: '05 Oct 2023' },
-                ].map((row) => (
-                  <tr key={row.file} className="hover:bg-surface-container-low transition-colors group">
-                    <td className="py-6 px-6">
-                      <div className="flex items-center gap-4">
-                        <span className="material-symbols-outlined text-primary text-[20px]">{row.icon}</span>
-                        <div>
-                          <span className="text-primary font-semibold text-[13px] block">{row.file}</span>
-                          <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-tight">{row.label}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-6 px-6">
-                      <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wide border ${row.badgeCls}`}>{row.badge}</span>
-                    </td>
-                    <td className="py-6 px-6 text-on-surface-variant text-sm">{row.principal}</td>
-                    <td className="py-6 px-6 text-on-surface-variant text-sm">{row.date}</td>
-                    <td className="py-6 px-6 text-right">
-                      <div className="flex justify-end gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
-                        {[
-                          { icon: 'visibility', title: 'View',     hover: 'hover:bg-primary hover:text-white' },
-                          { icon: 'download',   title: 'Download', hover: 'hover:bg-primary hover:text-white' },
-                          { icon: 'archive',    title: 'Archive',  hover: 'hover:bg-error hover:text-white'   },
-                        ].map(({ icon, title, hover }) => (
-                          <button key={icon} title={title} className={`p-2 text-primary transition-colors outline-none border-none shadow-none ${hover}`}>
-                            <span className="material-symbols-outlined text-[18px]">{icon}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </td>
+            {loading ? (
+              <div className="py-20 text-center">
+                 <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <table className="w-full text-left border-collapse min-w-[700px]">
+                <thead>
+                  <tr className="border-b-2 border-primary">
+                    {['Document Title', 'Category', 'Principal', 'Revision Date', 'Actions'].map((h, i) => (
+                      <th key={h} className={`py-4 px-6 font-bold text-[11px] uppercase tracking-widest text-primary ${i === 4 ? 'text-right' : ''}`}>{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-[12px] text-on-surface-variant">Showing 1 to 3 of 142 entries</span>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 border border-outline-variant text-[11px] font-bold uppercase tracking-widest hover:bg-surface-container-low transition-colors outline-none shadow-none">Previous</button>
-              <button className="px-4 py-2 border border-primary bg-primary text-white text-[11px] font-bold uppercase tracking-widest hover:brightness-110 transition-all outline-none shadow-none">Next</button>
-            </div>
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {documents.map((row) => (
+                    <tr key={row.file} className="hover:bg-surface-container-low transition-colors group">
+                      <td className="py-6 px-6">
+                        <div className="flex items-center gap-4">
+                          <span className="material-symbols-outlined text-primary text-[20px]">{row.icon}</span>
+                          <div>
+                            <span className="text-primary font-semibold text-[13px] block">{row.file}</span>
+                            <span className="text-[10px] text-on-surface-variant uppercase font-bold tracking-tight">{row.label}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-6 px-6">
+                        <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wide border ${row.badgeCls}`}>{row.badge}</span>
+                      </td>
+                      <td className="py-6 px-6 text-on-surface-variant text-sm">{row.principal}</td>
+                      <td className="py-6 px-6 text-on-surface-variant text-sm">{row.date}</td>
+                      <td className="py-6 px-6 text-right">
+                        <div className="flex justify-end gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                          {[
+                            { icon: 'visibility', title: 'View',     hover: 'hover:bg-primary hover:text-white', link: row.url },
+                            { icon: 'download',   title: 'Download', hover: 'hover:bg-primary hover:text-white', link: row.url },
+                          ].map(({ icon, title, hover, link }) => (
+                            <a key={icon} href={link} target="_blank" rel="noopener noreferrer" title={title} className={`p-2 text-primary transition-colors inline-block ${hover}`}>
+                              <span className="material-symbols-outlined text-[18px]">{icon}</span>
+                            </a>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {documents.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-20 text-center text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                        No documents found in vault
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </section>
       </div>
@@ -164,3 +203,4 @@ const AdminDocuments: React.FC = () => {
 };
 
 export default AdminDocuments;
+

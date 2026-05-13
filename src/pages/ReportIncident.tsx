@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/layout/Layout';
+import { supabase } from '../lib/supabase';
+
 
 type Path = 'informal' | 'formal' | null;
 
@@ -50,8 +52,10 @@ const genRef = () => {
 const ReportIncident: React.FC = () => {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [ref] = useState(genRef);
   const [form, setForm] = useState<FormData>({
+
     path: null,
     incidentType: '',
     incidentDate: '',
@@ -402,13 +406,48 @@ const ReportIncident: React.FC = () => {
             </button>
           ) : (
             <button
-              onClick={() => setSubmitted(true)}
-              className="bg-secondary text-white px-8 py-3 font-bold text-[12px] uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 outline-none border-none"
+              onClick={async () => {
+                setSubmitting(true);
+                const { error } = await supabase
+                  .from('cases')
+                  .insert([{
+                    reference_id: ref,
+                    path: form.path,
+                    incident_type: form.incidentType,
+                    incident_date: form.incidentDate,
+                    location: form.incidentLocation,
+                    involved_parties: form.involvedParties,
+                    narrative: form.narrative,
+                    witness_names: form.witnessNames,
+                    status: 'Initial Review',
+                    priority: 'Low'
+                  }]);
+
+                if (error) {
+                  console.error('Submission error:', error);
+                  alert('Error submitting complaint. Please try again.');
+                } else {
+                  setSubmitted(true);
+                }
+                setSubmitting(false);
+              }}
+              disabled={submitting}
+              className="bg-secondary text-white px-8 py-3 font-bold text-[12px] uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 outline-none border-none disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[16px]">send</span>
-              Submit Complaint
+              {submitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined text-[16px]">send</span>
+                  Submit Complaint
+                </>
+              )}
             </button>
           )}
+
         </div>
       </div>
     </Layout>

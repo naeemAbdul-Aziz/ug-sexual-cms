@@ -82,29 +82,29 @@ graph TD
     ADMIN((System Admin))
     
     FE[React Frontend Portal]
-    API[RESTful API Backend]
+    SB[Supabase Backend]
     
     DB[(PostgreSQL Database)]
-    S3[(Secure Blob Storage)]
+    ST[(Supabase Storage)]
     
     C -->|1. Submits grievance + evidence| FE
-    FE -->|2. Sanitizes & sends JSON/Multipart| API
+    FE -->|2. Calls Supabase Client| SB
     
-    API -->|3a. Saves evidence files| S3
-    S3 -->|3b. Returns Secure URI| API
+    SB -->|3a. Saves evidence files| ST
+    ST -->|3b. Returns Secure Path| SB
     
-    API -->|4. Commits case data + URIs| DB
-    API -->|5. Returns Reference ID| FE
+    SB -->|4. Commits case data + Paths| DB
+    SB -->|5. Returns Reference ID| FE
     FE -->|6. Displays success receipt| C
     
-    ADMIN -->|7. Views unassigned cases| API
-    API -->|Fetches from DB| DB
-    ADMIN -->|8. Assigns case to Officer| API
+    ADMIN -->|7. Views unassigned cases| SB
+    SB -->|Fetches via PostgREST| DB
+    ADMIN -->|8. Assigns case to Officer| SB
     
-    EOB -->|9. Accesses assigned case| API
-    API -->|Retrieves case + evidence| DB
-    API -->|Fetches media| S3
-    EOB -->|10. Updates status & adds notes| API
+    EOB -->|9. Accesses assigned case| SB
+    SB -->|Retrieves case + evidence| DB
+    SB -->|Fetches media| ST
+    EOB -->|10. Updates status & adds notes| SB
 ```
 
 ### End-to-End SLA Sequence Diagram
@@ -220,46 +220,42 @@ Centralized registry for the policy terminology, served to the public `/definiti
 
 ---
 
-## 6. API Infrastructure
+## 6. API Infrastructure (Supabase PostgREST)
 
-The system utilizes a secure, v1 RESTful API partitioned by functional domains to handle end-to-end data flow.
+The system utilizes the auto-generated **Supabase PostgREST API** to handle end-to-end data flow. All requests are handled via the Supabase JS SDK.
 
 ### 6.1 Public Content & Policy Reference
-Endpoints serving the public-facing educational portals. No authentication required.
+Endpoints serving the public-facing educational portals. No authentication required (RLS allows select).
 
-| Method | Endpoint | Description | Query Parameters / Payload |
+| Entity | Action | Description | Query / Filter |
 |---|---|---|---|
-| `GET` | `/api/v1/policy/definitions` | Retrieves all official policy terms and acronyms. | `?type=term\|acronym`, `?search=query` |
-| `GET` | `/api/v1/policy/offences` | Retrieves the 9 official policy offences. | - |
+| `definitions` | `GET` | Retrieves all official policy terms and acronyms. | `.select()`, `.eq('type', ...)` |
+| `offences` | `GET` | Retrieves the official policy offences. | - |
 
 ### 6.2 Complaint Intake & Reporting (Public)
-Endpoints handling the ingestion of grievances from the university community.
+Handles the ingestion of grievances.
 
-| Method | Endpoint | Description | Payload / Response |
+| Entity | Action | Description | Payload |
 |---|---|---|---|
-| `POST` | `/api/v1/complaints` | Submits a new formal or informal grievance. | **Body**: `{ path, incidentType, incidentDate, location, parties, narrative, witnesses, evidenceUris[] }`<br>**Returns**: `{ referenceId: "#GBC-24-0812" }` |
-| `POST` | `/api/v1/complaints/evidence` | Handles multipart/form-data for evidence uploads. Streams to secure blob storage. | **Form-Data**: `file`<br>**Returns**: `{ uri: "s3://...", type: "video/mp4" }` |
-| `GET` | `/api/v1/complaints/status/:refId` | (Optional) Allows complainants to securely check the high-level status of their case using their Reference ID. | **Returns**: `{ status: "Investigation", daysRemaining: 14 }` |
+| `cases` | `INSERT` | Submits a new formal or informal grievance. | `{ reference_id, path, incident_type, ... }` |
+| `storage` | `UPLOAD` | Handles evidence uploads to the `evidence` bucket. | `multipart/form-data` |
 
 ### 6.3 Authentication & Authorization
-Endpoints handling Role-Based Access Control (RBAC) for EOB Officers and Administrators.
+Powered by **Supabase Auth**.
 
-| Method | Endpoint | Description | Payload |
-|---|---|---|---|
-| `POST` | `/api/v1/auth/login` | Authenticates staff and issues secure HTTP-only JWTs. | **Body**: `{ email, password }` |
-| `GET` | `/api/v1/auth/me` | Retrieves the authenticated user's profile and RBAC role (`ADMIN`, `OFFICER`). | - |
+| Action | Description | Method |
+|---|---|---|
+| `signInWithPassword` | Authenticates staff and issues JWTs. | `auth.signIn()` |
+| `getUser` | Retrieves the authenticated user's profile and RBAC role. | `auth.getUser()` |
 
 ### 6.4 Case Management (Admin & Officers)
-Endpoints for the lifecycle management of submitted cases. Requires `Bearer <Token>`.
+Lifecycle management of cases. Governed by **PostgreSQL RLS Policies**.
 
-| Method | Endpoint | Description | Query Parameters / Payload |
+| Entity | Action | Description | Access Level |
 |---|---|---|---|
-| `GET` | `/api/v1/admin/cases` | Lists cases based on access level. Admins see all; Officers see assigned cases. | `?status=open`, `?type=informal`, `?offenceType=gbv` |
-| `GET` | `/api/v1/admin/cases/:id` | Retrieves full secure details of a specific grievance, including evidence URIs. | - |
-| `PATCH` | `/api/v1/admin/cases/:id` | Updates operational properties of a case. | **Body**: `{ status, priority }` |
-| `POST` | `/api/v1/admin/cases/:id/assign` | Assigns an EOB Case Officer to a case. Triggers the 7-day contact notification. | **Body**: `{ officerId }` (Requires `ADMIN` role) |
-| `GET` | `/api/v1/admin/cases/:id/notes` | Retrieves internal investigation notes for a case. | - |
-| `POST` | `/api/v1/admin/cases/:id/notes` | Appends a new internal investigation note/log to the case timeline. | **Body**: `{ noteText, visibility: "internal\|panel" }` |
+| `cases` | `SELECT` | Lists cases based on RLS. | Admin (All), Officer (Assigned) |
+| `cases` | `UPDATE` | Updates status or priority. | Admin/Officer |
+| `case_notes` | `INSERT` | Appends a new internal investigation note. | Officer |
 
 ### 6.5 Global Policy Management (Admin Only)
 Endpoints for managing the underlying taxonomies of the policy. Requires `ADMIN` role.
