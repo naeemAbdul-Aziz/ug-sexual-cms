@@ -97,14 +97,14 @@ const Overview: React.FC = () => {
 
       {/* Stats */}
       <section className="py-12 px-margin-desktop bg-white border-b border-outline-variant">
-        <div className="page-lane grid grid-cols-2 lg:grid-cols-4 gap-0 border border-outline-variant divide-x divide-outline-variant">
+        <div className="page-lane grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-outline-variant border border-outline-variant">
           {[
             { val: '13',      label: 'EOB members',        sub: 'Equal Opportunities Board' },
             { val: '4 yrs',   label: 'Evaluation cycle',   sub: 'Policy impact assessment' },
             { val: '5 yrs',   label: 'Review cycle',       sub: 'Full policy review' },
             { val: '21 days', label: 'Adjudication window', sub: 'Formal complaint resolution' },
           ].map(({ val, label, sub }) => (
-            <div key={label} className="border-l-4 border-l-secondary px-8 py-10 hover:bg-surface-container-low transition-colors">
+            <div key={label} className="bg-white border-l-4 border-l-secondary px-8 py-10 hover:bg-surface-container-low transition-colors">
               <span className="text-primary font-display-lg text-4xl font-bold block mb-1">{val}</span>
               <span className="text-on-surface font-bold text-[12px] uppercase tracking-wider block mb-1">{label}</span>
               <span className="text-on-surface-variant text-xs">{sub}</span>

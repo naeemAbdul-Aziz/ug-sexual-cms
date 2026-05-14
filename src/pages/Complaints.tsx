@@ -131,7 +131,7 @@ const Complaints: React.FC = () => {
                 <span className="material-symbols-outlined group-open:rotate-180 transition-transform text-outline shrink-0">expand_more</span>
               </summary>
               <div className="px-7 pb-8 pt-4 border-t border-outline-variant bg-surface-container-low/30">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-0 border border-outline-variant mb-6 divide-x divide-outline-variant">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-px bg-outline-variant border border-outline-variant mb-6">
                   {[
                     { n: '01', title: 'Lodge complaint', body: 'Complainant presents grievance orally or in writing to the Administrator. Oral complaints are documented, read back, and signed.' },
                     { n: '02', title: 'Written statement', body: 'Details, dates, places, names of those connected with the incident; any documentary evidence: video/audio, emails, SMS, WhatsApp, social media.' },
@@ -140,7 +140,7 @@ const Complaints: React.FC = () => {
                     { n: '05', title: 'Decision', body: 'After reviewing all evidence, EOB submits recommendations to the Vice-Chancellor per Section 13.' },
                     { n: '06', title: 'Appeal', body: "Dissatisfied party may appeal to the University's Appeals Board (UG Act, 2010 — Act 806)." },
                   ].map(({ n, title, body }) => (
-                    <div key={n} className="p-5 hover:bg-primary hover:text-white transition-colors cursor-default group/step">
+                    <div key={n} className="bg-white p-5 hover:bg-primary hover:text-white transition-colors cursor-default group/step">
                       <span className="font-bold text-secondary text-xs mb-3 block group-hover/step:text-secondary-fixed">{n}</span>
                       <h5 className="font-bold text-primary text-[12px] uppercase tracking-wider mb-2 group-hover/step:text-white">{title}</h5>
                       <p className="text-[11px] text-on-surface-variant leading-relaxed group-hover/step:text-white/70">{body}</p>
@@ -205,7 +205,7 @@ const Complaints: React.FC = () => {
                   <p className="text-on-surface-variant text-sm leading-relaxed mb-4">
                     No aspect of this policy shall operate to prejudice the rights of the parties to use other available legal mechanisms, including:
                   </p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     {['The Police', 'The Courts', 'National Labour Commission', 'Commission on Human Rights & Administrative Justice (CHRAJ)'].map((body) => (
                       <div key={body} className="border border-outline-variant p-4 text-center hover:border-primary/30 transition-colors">
                         <p className="text-primary font-bold text-[12px] leading-snug">{body}</p>

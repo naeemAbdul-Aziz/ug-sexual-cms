@@ -201,7 +201,7 @@ const Institutions: React.FC = () => {
                     'Organise gender sensitivity training and orientation.',
                     'Monitor and evaluate all gender policy activities.',
                   ]} />
-                  <div className="mt-8 pt-8 border-t border-outline-variant grid grid-cols-3 gap-4 text-center">
+                  <div className="mt-8 pt-8 border-t border-outline-variant grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                     <div>
                       <p className="font-bold text-primary text-xl">13</p>
                       <p className="text-[10px] uppercase tracking-wider text-outline">Members</p>
