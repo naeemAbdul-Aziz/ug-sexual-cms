@@ -17,34 +17,63 @@ interface PolicyDocument {
 const AdminDocuments: React.FC = () => {
   const [documents, setDocuments] = useState<PolicyDocument[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const fetchDocuments = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('policy_documents')
+      .select('*')
+      .order('effective_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching documents:', error);
+    } else if (data) {
+      setDocuments(data.map(d => ({
+        icon: 'description',
+        file: `UG_Gender_Policy_v${d.version_number}.pdf`,
+        badge: 'Policies',
+        badgeCls: 'bg-surface-container-high text-on-surface-variant border-outline-variant',
+        label: 'Verified • PDF',
+        principal: 'Academic Board',
+        date: new Date(d.effective_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        url: d.storage_uri
+      })));
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('policy_documents')
-        .select('*')
-        .order('effective_date', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching documents:', error);
-      } else if (data) {
-        setDocuments(data.map(d => ({
-          icon: 'description',
-          file: `UG_Gender_Policy_v${d.version_number}.pdf`,
-          badge: 'Policies',
-          badgeCls: 'bg-surface-container-high text-on-surface-variant border-outline-variant',
-          label: 'Verified • PDF',
-          principal: 'Academic Board',
-          date: new Date(d.effective_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-          url: d.storage_uri
-        })));
-      }
-      setLoading(false);
-    };
-
     fetchDocuments();
   }, []);
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUploading(true);
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const version = formData.get('version') as string;
+    const date = formData.get('date') as string;
+
+    const payload = {
+      version_number: version,
+      effective_date: date,
+      storage_uri: '#' // Simulated link
+    };
+
+    const { error } = await supabase
+      .from('policy_documents')
+      .insert([payload]);
+
+    if (error) {
+      alert('Failed to upload document record: ' + error.message);
+    } else {
+      setIsUploadModalOpen(false);
+      fetchDocuments();
+    }
+    setIsUploading(false);
+  };
 
   return (
     <AdminLayout pageTitle="Archives & Governance">
@@ -63,13 +92,16 @@ const AdminDocuments: React.FC = () => {
               Central repository for institutional frameworks, case evidence, and historical audit reports.
             </p>
           </div>
-          <button className="bg-primary text-white font-label-md text-[12px] px-8 py-4 flex items-center gap-3 hover:brightness-110 transition-all self-start md:self-auto border-none outline-none shadow-none uppercase tracking-widest">
+          <button 
+            onClick={() => setIsUploadModalOpen(true)}
+            className="bg-primary text-white font-label-md text-[12px] px-8 py-4 flex items-center gap-3 hover:brightness-110 transition-all self-start md:self-auto border-none outline-none shadow-none uppercase tracking-widest"
+          >
             <span className="material-symbols-outlined text-[18px]">upload_file</span>
             Upload Repository
           </button>
         </div>
 
-        {/* Stats (Semi-static for now based on known stats) */}
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-outline-variant border border-outline-variant mb-12 overflow-hidden">
           <div className="bg-white p-8 flex flex-col gap-1">
             <span className="font-label-md text-[11px] uppercase tracking-widest text-on-surface-variant">Global Records</span>
@@ -124,7 +156,7 @@ const AdminDocuments: React.FC = () => {
           </div>
         </section>
 
-        {/* Recent activity table */}
+        {/* Policy Archive */}
         <section className="border-t border-outline-variant pt-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <h3 className="font-bold text-primary text-[15px] uppercase tracking-widest">Policy Archive</h3>
@@ -197,10 +229,51 @@ const AdminDocuments: React.FC = () => {
             )}
           </div>
         </section>
+
+        {/* Upload Modal */}
+        {isUploadModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/20 backdrop-blur-sm p-6">
+            <div className="bg-white w-full max-w-md border border-outline shadow-2xl animate-in fade-in zoom-in duration-200">
+              <form onSubmit={handleUpload}>
+                <div className="p-8 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                  <h3 className="font-display-lg text-2xl text-primary uppercase tracking-tight">Upload Policy Document</h3>
+                  <button type="button" onClick={() => setIsUploadModalOpen(false)} className="text-outline hover:text-primary transition-colors outline-none">
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+
+                <div className="p-8 flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Version Number</label>
+                    <input name="version" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm" placeholder="e.g. 3.1" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Effective Date</label>
+                    <input name="date" type="date" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Select PDF File</label>
+                    <div className="border-2 border-dashed border-outline-variant p-10 text-center hover:border-primary transition-colors cursor-pointer group">
+                      <span className="material-symbols-outlined text-4xl text-outline group-hover:text-primary transition-colors mb-2">upload_file</span>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Click to browse or drag file here</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-8 bg-surface-container-low border-t border-outline-variant flex justify-end gap-4">
+                  <button type="button" onClick={() => setIsUploadModalOpen(false)} className="px-6 py-3 font-bold text-xs tracking-widest text-primary hover:bg-primary/5 transition-colors uppercase outline-none">Cancel</button>
+                  <button type="submit" disabled={isUploading} className="bg-primary text-on-primary px-8 py-3 font-bold text-xs tracking-widest hover:brightness-125 transition-all uppercase outline-none border-none flex items-center gap-3">
+                    {isUploading && <div className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />}
+                    Confirm Upload
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
 };
 
 export default AdminDocuments;
-

@@ -99,6 +99,35 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleExport = async () => {
+    const { data } = await supabase.from('cases').select('*').order('submitted_at', { ascending: false });
+    if (!data || data.length === 0) return;
+    
+    const headers = ['Reference ID', 'Type', 'Party', 'Offence', 'Priority', 'Status', 'Date'];
+    const csvContent = [
+      headers.join(','),
+      ...data.map(c => [
+        c.reference_id, 
+        c.path, 
+        `"${c.involved_parties || 'Anonymous'}"`, 
+        `"${c.incident_type}"`, 
+        c.priority, 
+        c.status, 
+        new Date(c.submitted_at).toISOString()
+      ].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `UG_GBC_Global_Export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <AdminLayout pageTitle="Gender Policy Admin">
       <div className="p-10 max-w-full mx-auto w-full">
@@ -114,14 +143,20 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
           <div className="flex gap-4">
-            <button className="bg-white text-primary px-6 py-3 font-label-md text-xs tracking-widest flex items-center gap-3 border border-outline hover:bg-surface-container-low transition-colors uppercase outline-none">
+            <button 
+              onClick={handleExport}
+              className="bg-white text-primary px-6 py-3 font-label-md text-xs tracking-widest flex items-center gap-3 border border-outline hover:bg-surface-container-low transition-colors uppercase outline-none"
+            >
               <span className="material-symbols-outlined text-[18px]">file_download</span>
               Export
             </button>
-            <button className="bg-primary text-on-primary px-6 py-3 font-label-md text-xs tracking-widest flex items-center gap-3 hover:brightness-125 transition-all uppercase outline-none border-none shadow-none">
+            <Link 
+              to="/admin/cases?action=new"
+              className="bg-primary text-on-primary px-6 py-3 font-label-md text-xs tracking-widest flex items-center gap-3 hover:brightness-125 transition-all uppercase outline-none border-none shadow-none no-underline"
+            >
               <span className="material-symbols-outlined text-[18px]">add_circle</span>
               Initiate Proceeding
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -249,9 +284,12 @@ const AdminDashboard: React.FC = () => {
                       </td>
                       <td className="py-6 px-8 font-medium text-primary text-sm">{row.officer}</td>
                       <td className="py-6 px-8 text-right">
-                        <button className="text-primary hover:bg-primary hover:text-white border border-primary px-4 py-2 font-bold text-[10px] uppercase tracking-widest transition-all outline-none">
+                        <Link 
+                          to="/admin/cases"
+                          className="text-primary hover:bg-primary hover:text-white border border-primary px-4 py-2 font-bold text-[10px] uppercase tracking-widest transition-all outline-none no-underline inline-block"
+                        >
                           View Details
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   ))}

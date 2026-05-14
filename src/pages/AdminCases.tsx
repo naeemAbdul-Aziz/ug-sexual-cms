@@ -29,8 +29,25 @@ const getStatusCls = (status: string) => {
 
 const PAGE_SIZE = 10;
 
+interface RawCase {
+  id: string;
+  reference_id: string;
+  path: string;
+  incident_type: string;
+  incident_date: string;
+  location: string;
+  involved_parties: string | null;
+  narrative: string;
+  priority: string;
+  status: string;
+  submitted_at: string;
+  assigned_officer_id: string | null;
+  officer?: { id: string; full_name: string };
+}
+
 interface TransformedCase {
   id: string;
+  dbId: string;
   party: string;
   accent: string;
   date: string;
@@ -45,73 +62,120 @@ interface TransformedCase {
 
 const AdminCases: React.FC = () => {
   const [cases, setCases] = useState<TransformedCase[]>([]);
+  const [rawCases, setRawCases] = useState<RawCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [officers, setOfficers] = useState<{ id: string, full_name: string }[]>([]);
   
   // Filters
   const [filterOffence, setFilterOffence] = useState('All');
   const [filterType, setFilterType] = useState('All');
   const [filterPriority, setFilterPriority] = useState('Any');
 
+  // Modal State
+  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<RawCase | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const fetchOfficers = React.useCallback(async () => {
+    const { data } = await supabase
+      .from('users')
+      .select('id, full_name')
+      .in('role', ['OFFICER', 'ADMIN'])
+      .eq('is_active', true);
+    if (data) setOfficers(data as { id: string, full_name: string }[]);
+  }, []);
+
   useEffect(() => {
-    const fetchCases = async () => {
-      setLoading(true);
-      
-      let query = supabase
-        .from('cases')
-        .select(`
-          *,
-          officer:users!assigned_officer_id (full_name)
-        `, { count: 'exact' });
+    fetchOfficers();
+  }, [fetchOfficers]);
 
-      // Apply Filters
-      if (filterOffence !== 'All') query = query.eq('incident_type', filterOffence);
-      if (filterType !== 'All') query = query.eq('path', filterType.toLowerCase());
-      if (filterPriority !== 'Any') query = query.eq('priority', filterPriority);
+  const fetchCases = React.useCallback(async () => {
+    setLoading(true);
+    
+    let query = supabase
+      .from('cases')
+      .select(`
+        *,
+        officer:users!assigned_officer_id (id, full_name)
+      `, { count: 'exact' });
 
-      // Apply Pagination
-      const from = (currentPage - 1) * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
+    if (filterOffence !== 'All') query = query.eq('incident_type', filterOffence);
+    if (filterType !== 'All') query = query.eq('path', filterType.toLowerCase());
+    if (filterPriority !== 'Any') query = query.eq('priority', filterPriority);
 
-      const { data, count, error } = await query
-        .order('submitted_at', { ascending: false })
-        .range(from, to);
+    const from = (currentPage - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
-      if (error) {
-        console.error('Error fetching cases:', error);
-      } else if (data) {
-        const transformed = data.map(c => {
-          const submittedDate = new Date(c.submitted_at);
-          const now = new Date();
-          const diffDays = Math.floor((now.getTime() - submittedDate.getTime()) / (1000 * 3600 * 24));
-          const daysLeft = c.path === 'formal' ? Math.max(0, 21 - diffDays) : null;
+    const { data, count, error } = await query
+      .order('submitted_at', { ascending: false })
+      .range(from, to);
 
-          return {
-            id: c.reference_id,
-            party: c.involved_parties || 'Anonymous',
-            accent: c.path === 'formal' ? 'bg-primary' : 'bg-secondary',
-            date: submittedDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase(),
-            status: c.status,
-            statusCls: getStatusCls(c.status),
-            officer: c.officer?.full_name || 'Unassigned',
-            type: c.path.charAt(0).toUpperCase() + c.path.slice(1),
-            offenceType: OFFENCE_LABELS[c.incident_type] || c.incident_type,
-            daysLeft: daysLeft,
-            priority: c.priority
-          };
-        });
-        setCases(transformed);
-        setTotalCount(count || 0);
-      }
-      setLoading(false);
-    };
+    if (error) {
+      console.error('Error fetching cases:', error);
+    } else if (data) {
+      setRawCases(data as RawCase[]);
+      const transformed = (data as RawCase[]).map(c => {
+        const submittedDate = new Date(c.submitted_at);
+        const now = new Date();
+        const diffDays = Math.floor((now.getTime() - submittedDate.getTime()) / (1000 * 3600 * 24));
+        const daysLeft = c.path === 'formal' ? Math.max(0, 21 - diffDays) : null;
 
+        return {
+          id: c.reference_id,
+          dbId: c.id,
+          party: c.involved_parties || 'Anonymous',
+          accent: c.path === 'formal' ? 'bg-primary' : 'bg-secondary',
+          date: submittedDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase(),
+          status: c.status,
+          statusCls: getStatusCls(c.status),
+          officer: c.officer?.full_name || 'Unassigned',
+          type: c.path.charAt(0).toUpperCase() + c.path.slice(1),
+          offenceType: OFFENCE_LABELS[c.incident_type] || c.incident_type,
+          daysLeft: daysLeft,
+          priority: c.priority
+        };
+      });
+      setCases(transformed);
+      setTotalCount(count || 0);
+    }
+    setLoading(false);
+  }, [currentPage, filterOffence, filterType, filterPriority]);
+
+  const handleExport = () => {
+    if (cases.length === 0) return;
+    const headers = ['Reference ID', 'Type', 'Party', 'Offence', 'Priority', 'Status'];
+    const csvContent = [
+      headers.join(','),
+      ...cases.map(c => [c.id, c.type, `"${c.party}"`, `"${c.offenceType}"`, c.priority, c.status].join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `UG_GBC_Registry_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
     fetchCases();
 
-    // Realtime subscription
+    // Check for ?action=new query param
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('action') === 'new') {
+      setIsAddModalOpen(true);
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
     const channel = supabase
-      .channel('schema-db-changes')
+      .channel('admin-cases')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'cases' },
@@ -122,7 +186,77 @@ const AdminCases: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [currentPage, filterOffence, filterType, filterPriority]);
+  }, [fetchCases]);
+
+  const handleUpdateCase = async (id: string, updates: Partial<RawCase>) => {
+    setIsUpdating(true);
+    const { error } = await supabase
+      .from('cases')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      alert('Update failed: ' + error.message);
+    } else {
+      setIsManageModalOpen(false);
+      fetchCases();
+    }
+    setIsUpdating(false);
+  };
+
+  const handleDeleteCase = async (id: string) => {
+    if (!confirm('CAUTION: This will permanently delete this case record. Proceed?')) return;
+    
+    setIsUpdating(true);
+    const { error } = await supabase
+      .from('cases')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      alert('Delete failed: ' + error.message);
+    } else {
+      setIsManageModalOpen(false);
+      fetchCases();
+    }
+    setIsUpdating(false);
+  };
+
+  const handleAddCase = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    
+    // Simple reference ID generator
+    const year = new Date().getFullYear().toString().slice(-2);
+    const random = Math.floor(1000 + Math.random() * 9000);
+    const refId = `#GBC-${year}-${random}`;
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const payload = {
+      reference_id: refId,
+      path: formData.get('path'),
+      incident_type: formData.get('incident_type'),
+      incident_date: formData.get('incident_date'),
+      location: formData.get('location'),
+      involved_parties: formData.get('involved_parties'),
+      narrative: formData.get('narrative'),
+      priority: formData.get('priority'),
+      status: 'Initial Review',
+      submitted_at: new Date().toISOString()
+    };
+
+    const { error } = await supabase
+      .from('cases')
+      .insert([payload]);
+
+    if (error) {
+      alert('Failed to create case: ' + error.message);
+    } else {
+      setIsAddModalOpen(false);
+      fetchCases();
+    }
+    setIsUpdating(false);
+  };
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
@@ -140,11 +274,17 @@ const AdminCases: React.FC = () => {
             </div>
           </div>
           <div className="flex gap-4">
-            <button className="bg-white text-primary px-6 py-3 font-bold text-xs tracking-widest flex items-center gap-3 border border-outline hover:bg-surface-container-low transition-colors uppercase outline-none">
+            <button 
+              onClick={handleExport}
+              className="bg-white text-primary px-6 py-3 font-bold text-xs tracking-widest flex items-center gap-3 border border-outline hover:bg-surface-container-low transition-colors uppercase outline-none"
+            >
               <span className="material-symbols-outlined text-[18px]">file_download</span>
               Export
             </button>
-            <button className="bg-primary text-on-primary px-6 py-3 font-bold text-xs tracking-widest flex items-center gap-3 hover:brightness-125 transition-all uppercase outline-none border-none shadow-none">
+            <button 
+              onClick={() => setIsAddModalOpen(true)}
+              className="bg-primary text-on-primary px-6 py-3 font-bold text-xs tracking-widest flex items-center gap-3 hover:brightness-125 transition-all uppercase outline-none border-none shadow-none"
+            >
               <span className="material-symbols-outlined text-[18px]">add_circle</span>
               Initiate Proceeding
             </button>
@@ -216,7 +356,7 @@ const AdminCases: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-outline-variant">
                 {cases.map((row) => (
-                  <tr key={row.id} className="hover:bg-surface-container-low transition-all">
+                  <tr key={row.dbId} className="hover:bg-surface-container-low transition-all">
                     <td className="py-7 px-6">
                       <div className="flex flex-col">
                         <span className="font-bold text-primary text-sm tracking-tight">{row.id}</span>
@@ -258,7 +398,10 @@ const AdminCases: React.FC = () => {
                       <span className={`inline-block px-3 py-1 border font-bold text-[9px] uppercase tracking-[0.15em] ${row.statusCls}`}>{row.status}</span>
                     </td>
                     <td className="py-7 px-6 text-right">
-                      <button className="text-primary hover:bg-primary hover:text-white border border-primary px-4 py-2 font-bold text-[10px] uppercase tracking-widest transition-all outline-none">
+                      <button 
+                        onClick={() => { setSelectedCase(rawCases.find(rc => rc.id === row.dbId)); setIsManageModalOpen(true); }}
+                        className="text-primary hover:bg-primary hover:text-white border border-primary px-4 py-2 font-bold text-[10px] uppercase tracking-widest transition-all outline-none"
+                      >
                         Manage Case
                       </button>
                     </td>
@@ -278,37 +421,208 @@ const AdminCases: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        <div className="mt-10 py-6 flex justify-between items-center border-t border-outline-variant">
-          <button 
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-            className="flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors outline-none disabled:opacity-30 disabled:hover:text-on-surface-variant"
-          >
-            <span className="material-symbols-outlined text-[14px]">west</span>
-            Previous
-          </button>
-          
-          <div className="flex items-center gap-4">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-              <button 
-                key={n} 
-                onClick={() => setCurrentPage(n)}
-                className={`w-8 h-8 flex items-center justify-center font-bold text-[11px] outline-none border-none transition-colors ${n === currentPage ? 'bg-primary text-on-primary' : 'hover:bg-surface-container-low text-on-surface-variant'}`}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
+        {totalPages > 1 && (
+          <div className="mt-10 py-6 flex justify-between items-center border-t border-outline-variant">
+            <button 
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              className="flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors outline-none disabled:opacity-30 disabled:hover:text-on-surface-variant"
+            >
+              <span className="material-symbols-outlined text-[14px]">west</span>
+              Previous
+            </button>
+            
+            <div className="flex items-center gap-4">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <button 
+                  key={n} 
+                  onClick={() => setCurrentPage(n)}
+                  className={`w-8 h-8 flex items-center justify-center font-bold text-[11px] outline-none border-none transition-colors ${n === currentPage ? 'bg-primary text-on-primary' : 'hover:bg-surface-container-low text-on-surface-variant'}`}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
 
-          <button 
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            className="flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors outline-none disabled:opacity-30 disabled:hover:text-on-surface-variant"
-          >
-            Next
-            <span className="material-symbols-outlined text-[14px]">east</span>
-          </button>
-        </div>
+            <button 
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              className="flex items-center gap-2 font-bold text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors outline-none disabled:opacity-30 disabled:hover:text-on-surface-variant"
+            >
+              Next
+              <span className="material-symbols-outlined text-[14px]">east</span>
+            </button>
+          </div>
+        )}
+
+        {/* Manage Case Modal */}
+        {isManageModalOpen && selectedCase && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/20 backdrop-blur-sm p-6">
+            <div className="bg-white w-full max-w-2xl border border-outline shadow-2xl animate-in fade-in zoom-in duration-200">
+              <div className="p-8 border-b border-outline-variant flex justify-between items-start bg-surface-container-low">
+                <div>
+                  <h3 className="font-display-lg text-2xl text-primary uppercase tracking-tight mb-1">Manage {selectedCase.reference_id}</h3>
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Submitted on {new Date(selectedCase.submitted_at).toLocaleDateString()}</p>
+                </div>
+                <button onClick={() => setIsManageModalOpen(false)} className="text-outline hover:text-primary transition-colors outline-none">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+              <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-10">
+                {/* Status Update */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Process Status</label>
+                    <select 
+                      className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm transition-all font-bold text-primary"
+                      value={selectedCase.status}
+                      onChange={(e) => handleUpdateCase(selectedCase.id, { status: e.target.value })}
+                      disabled={isUpdating}
+                    >
+                      <option value="Initial Review">Initial Review</option>
+                      <option value="Investigation">Investigation</option>
+                      <option value="Panel Hearing">Panel Hearing</option>
+                      <option value="Recommendation">Recommendation</option>
+                      <option value="Resolved">Resolved</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Assigned Officer</label>
+                    <select 
+                      className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm transition-all font-bold"
+                      value={selectedCase.assigned_officer_id || ''}
+                      onChange={(e) => handleUpdateCase(selectedCase.id, { assigned_officer_id: e.target.value || null })}
+                      disabled={isUpdating}
+                    >
+                      <option value="">Unassigned</option>
+                      {officers.map(o => (
+                        <option key={o.id} value={o.id}>{o.full_name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Priority Level</label>
+                    <div className="flex gap-2">
+                      {['Low', 'Medium', 'High', 'Critical'].map(p => (
+                        <button
+                          key={p}
+                          onClick={() => handleUpdateCase(selectedCase.id, { priority: p })}
+                          className={`flex-1 py-2 text-[10px] font-bold uppercase border transition-all ${selectedCase.priority === p ? 'bg-primary text-on-primary border-primary' : 'bg-white text-on-surface-variant border-outline-variant hover:border-primary'}`}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Case Info Summary */}
+                <div className="bg-surface-container-low p-6 border border-outline-variant flex flex-col gap-4">
+                  <div>
+                    <span className="text-[9px] font-bold text-outline uppercase block mb-1">Involved Parties</span>
+                    <p className="text-sm font-medium">{selectedCase.involved_parties || 'Anonymous'}</p>
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-bold text-outline uppercase block mb-1">Incident Type</span>
+                    <p className="text-sm font-medium">{OFFENCE_LABELS[selectedCase.incident_type] || selectedCase.incident_type}</p>
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-bold text-outline uppercase block mb-1">Location</span>
+                    <p className="text-sm">{selectedCase.location || 'Not specified'}</p>
+                  </div>
+                  <div className="mt-auto pt-4 border-t border-outline-variant flex justify-between items-center">
+                    <button 
+                      onClick={() => handleDeleteCase(selectedCase.id)}
+                      className="text-error font-bold text-[10px] uppercase tracking-widest hover:underline flex items-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">delete</span>
+                      Archive Record
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 bg-surface-container-low border-t border-outline-variant flex justify-end gap-4">
+                 <button 
+                    onClick={() => setIsManageModalOpen(false)}
+                    className="bg-primary text-on-primary px-8 py-3 font-bold text-xs tracking-widest hover:brightness-125 transition-all uppercase outline-none border-none"
+                  >
+                    Done
+                  </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Initiate Proceeding Modal */}
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-primary/20 backdrop-blur-sm p-6">
+            <div className="bg-white w-full max-w-3xl border border-outline shadow-2xl animate-in fade-in zoom-in duration-200 overflow-hidden">
+              <form onSubmit={handleAddCase}>
+                <div className="p-8 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                  <h3 className="font-display-lg text-2xl text-primary uppercase tracking-tight">Initiate Official Proceeding</h3>
+                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="text-outline hover:text-primary transition-colors outline-none">
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+
+                <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 max-h-[60vh] overflow-y-auto">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Involved Parties</label>
+                    <input name="involved_parties" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm" placeholder="e.g. Student vs Faculty" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Incident Location</label>
+                    <input name="location" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm" placeholder="e.g. Balme Library" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Offence Type</label>
+                    <select name="incident_type" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm font-bold">
+                      {Object.entries(OFFENCE_LABELS).map(([val, label]) => (
+                        <option key={val} value={val}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Adjudication Path</label>
+                    <select name="path" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm font-bold">
+                      <option value="formal">Formal Adjudication</option>
+                      <option value="informal">Informal Mediation</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Incident Date</label>
+                    <input name="incident_date" type="date" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Initial Priority</label>
+                    <select name="priority" required className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm font-bold">
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                      <option value="High">High</option>
+                      <option value="Critical">Critical</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2 flex flex-col gap-2">
+                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Case Narrative / Brief</label>
+                    <textarea name="narrative" required rows={4} className="w-full px-4 py-3 border border-outline-variant bg-white focus:border-primary outline-none text-sm leading-relaxed" placeholder="Brief summary of the incident as reported..." />
+                  </div>
+                </div>
+
+                <div className="p-8 bg-surface-container-low border-t border-outline-variant flex justify-end gap-4">
+                  <button type="button" onClick={() => setIsAddModalOpen(false)} className="px-6 py-3 font-bold text-xs tracking-widest text-primary hover:bg-primary/5 transition-colors uppercase outline-none">Cancel</button>
+                  <button type="submit" disabled={isUpdating} className="bg-primary text-on-primary px-8 py-3 font-bold text-xs tracking-widest hover:brightness-125 transition-all uppercase outline-none border-none flex items-center gap-3">
+                    {isUpdating && <div className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />}
+                    Confirm & Open Case
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
